@@ -50,25 +50,25 @@ const FingerprintEngine = (() => {
 
   function getUserAgentData() {
     const ua = navigator.userAgent;
-    
+
     // Detecção de browser
     let browser = 'Unknown';
     let browserVersion = '';
-    
-    if (/Edg\/(\d+)/.test(ua))      { browser = 'Microsoft Edge';  browserVersion = RegExp.$1; }
-    else if (/OPR\/(\d+)/.test(ua)) { browser = 'Opera';           browserVersion = RegExp.$1; }
-    else if (/Chrome\/(\d+)/.test(ua)) { browser = 'Chrome';        browserVersion = RegExp.$1; }
-    else if (/Firefox\/(\d+)/.test(ua)) { browser = 'Firefox';      browserVersion = RegExp.$1; }
-    else if (/Safari\/(\d+)/.test(ua)) { browser = 'Safari';        browserVersion = RegExp.$1; }
+
+    if (/Edg\/(\d+)/.test(ua)) { browser = 'Microsoft Edge'; browserVersion = RegExp.$1; }
+    else if (/OPR\/(\d+)/.test(ua)) { browser = 'Opera'; browserVersion = RegExp.$1; }
+    else if (/Chrome\/(\d+)/.test(ua)) { browser = 'Chrome'; browserVersion = RegExp.$1; }
+    else if (/Firefox\/(\d+)/.test(ua)) { browser = 'Firefox'; browserVersion = RegExp.$1; }
+    else if (/Safari\/(\d+)/.test(ua)) { browser = 'Safari'; browserVersion = RegExp.$1; }
 
     // Detecção de SO
     let os = 'Unknown OS';
-    if (/Windows NT 10/.test(ua))     os = 'Windows 10/11';
+    if (/Windows NT 10/.test(ua)) os = 'Windows 10/11';
     else if (/Windows NT 6\.3/.test(ua)) os = 'Windows 8.1';
-    else if (/Mac OS X/.test(ua))     os = 'macOS';
-    else if (/Android/.test(ua))      os = 'Android';
-    else if (/iPhone|iPad/.test(ua))  os = 'iOS';
-    else if (/Linux/.test(ua))        os = 'Linux';
+    else if (/Mac OS X/.test(ua)) os = 'macOS';
+    else if (/Android/.test(ua)) os = 'Android';
+    else if (/iPhone|iPad/.test(ua)) os = 'iOS';
+    else if (/Linux/.test(ua)) os = 'Linux';
 
     // Detecção de dispositivo
     let deviceType = 'Desktop';
@@ -83,7 +83,7 @@ const FingerprintEngine = (() => {
   async function getCanvasFingerprint() {
     try {
       const canvas = document.createElement('canvas');
-      canvas.width  = 280;
+      canvas.width = 280;
       canvas.height = 60;
       const ctx = canvas.getContext('2d');
       if (!ctx) return { hash: 'blocked', raw: null };
@@ -137,8 +137,8 @@ const FingerprintEngine = (() => {
 
       const ctx = new AudioCtx();
       const oscillator = ctx.createOscillator();
-      const analyser   = ctx.createAnalyser();
-      const gain       = ctx.createGain();
+      const analyser = ctx.createAnalyser();
+      const gain = ctx.createGain();
       const scriptNode = ctx.createScriptProcessor(4096, 1, 1);
 
       gain.gain.value = 0; // MUDO — sem nenhum som
@@ -162,7 +162,7 @@ const FingerprintEngine = (() => {
       return new Promise((resolve) => {
         let result = null;
 
-        scriptNode.onaudioprocess = function(e) {
+        scriptNode.onaudioprocess = function (e) {
           const buffer = e.inputBuffer.getChannelData(0);
           // Soma dos valores float produz diferenças por hardware
           const sum = buffer.reduce((acc, val) => acc + Math.abs(val), 0);
@@ -184,7 +184,7 @@ const FingerprintEngine = (() => {
         // Timeout fallback
         setTimeout(() => {
           if (!result) {
-            ctx.close().catch(() => {});
+            ctx.close().catch(() => { });
             resolve({ hash: 'timeout', value: null });
           }
         }, 2000);
@@ -203,7 +203,7 @@ const FingerprintEngine = (() => {
       if (!gl) return { renderer: 'not-supported', vendor: 'not-supported' };
 
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-      
+
       const renderer = debugInfo
         ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
         : gl.getParameter(gl.RENDERER);
@@ -216,7 +216,7 @@ const FingerprintEngine = (() => {
       const params = {
         renderer,
         vendor,
-        version:  gl.getParameter(gl.VERSION),
+        version: gl.getParameter(gl.VERSION),
         glslVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
         maxTexture: gl.getParameter(gl.MAX_TEXTURE_SIZE),
         maxViewport: gl.getParameter(gl.MAX_VIEWPORT_DIMS)?.join('x'),
@@ -235,14 +235,14 @@ const FingerprintEngine = (() => {
 
   function getScreenData() {
     return {
-      width:       screen.width,
-      height:      screen.height,
-      availWidth:  screen.availWidth,
+      width: screen.width,
+      height: screen.height,
+      availWidth: screen.availWidth,
       availHeight: screen.availHeight,
-      colorDepth:  screen.colorDepth,
-      pixelRatio:  window.devicePixelRatio,
+      colorDepth: screen.colorDepth,
+      pixelRatio: window.devicePixelRatio,
       orientation: screen.orientation?.type || 'unknown',
-      innerWidth:  window.innerWidth,
+      innerWidth: window.innerWidth,
       innerHeight: window.innerHeight
     };
   }
@@ -252,11 +252,11 @@ const FingerprintEngine = (() => {
   function getLocaleData() {
     const tz = Intl.DateTimeFormat().resolvedOptions();
     return {
-      timezone:     tz.timeZone,
-      locale:       navigator.language,
-      languages:    (navigator.languages || [navigator.language]).join(', '),
-      tzOffset:     new Date().getTimezoneOffset(),
-      dateFormat:   new Intl.DateTimeFormat().format(new Date()),
+      timezone: tz.timeZone,
+      locale: navigator.language,
+      languages: (navigator.languages || [navigator.language]).join(', '),
+      tzOffset: new Date().getTimezoneOffset(),
+      dateFormat: new Intl.DateTimeFormat().format(new Date()),
       numberFormat: new Intl.NumberFormat().format(1234567.89)
     };
   }
@@ -265,11 +265,11 @@ const FingerprintEngine = (() => {
 
   function getHardwareData() {
     return {
-      cpuCores:    navigator.hardwareConcurrency || 'unknown',
-      memory:      navigator.deviceMemory ? navigator.deviceMemory + ' GB' : 'not-disclosed',
-      platform:    navigator.platform,
+      cpuCores: navigator.hardwareConcurrency || 'unknown',
+      memory: navigator.deviceMemory ? navigator.deviceMemory + ' GB' : 'not-disclosed',
+      platform: navigator.platform,
       cookiesEnabled: navigator.cookieEnabled,
-      doNotTrack:  navigator.doNotTrack || 'not-set',
+      doNotTrack: navigator.doNotTrack || 'not-set',
       maxTouchPoints: navigator.maxTouchPoints || 0
     };
   }
@@ -282,10 +282,10 @@ const FingerprintEngine = (() => {
 
     return {
       effectiveType: conn.effectiveType || 'unknown',
-      downlink:      conn.downlink ? conn.downlink + ' Mbps' : 'unknown',
-      rtt:           conn.rtt ? conn.rtt + ' ms' : 'unknown',
-      saveData:      conn.saveData || false,
-      type:          conn.type || 'unknown'
+      downlink: conn.downlink ? conn.downlink + ' Mbps' : 'unknown',
+      rtt: conn.rtt ? conn.rtt + ' ms' : 'unknown',
+      saveData: conn.saveData || false,
+      type: conn.type || 'unknown'
     };
   }
 
@@ -520,7 +520,7 @@ const FingerprintEngine = (() => {
       try {
         const pc = new RTCPeerConnection({ iceServers: [] });
         pc.createDataChannel('');
-        
+
         pc.onicecandidate = (e) => {
           if (!e.candidate) {
             pc.close();
@@ -556,7 +556,7 @@ const FingerprintEngine = (() => {
       try {
         const img = new Image();
         img.referrerPolicy = 'no-referrer';
-        
+
         const timeout = setTimeout(() => {
           img.onload = null;
           img.onerror = null;
@@ -586,20 +586,20 @@ const FingerprintEngine = (() => {
   async function detectAutofillData() {
     return new Promise((resolve) => {
       const data = { name: null, email: null, username: null };
-      
+
       const form = document.createElement('form');
       form.style.cssText = 'position:absolute;left:-9999px;top:-9999px;visibility:hidden;';
-      
+
       const nameInput = document.createElement('input');
       nameInput.name = 'name';
       nameInput.type = 'text';
       nameInput.autocomplete = 'name';
-      
+
       const emailInput = document.createElement('input');
       emailInput.name = 'email';
       emailInput.type = 'email';
       emailInput.autocomplete = 'email';
-      
+
       form.appendChild(nameInput);
       form.appendChild(emailInput);
       document.body.appendChild(form);
@@ -607,7 +607,7 @@ const FingerprintEngine = (() => {
       setTimeout(() => {
         if (nameInput.value) data.name = nameInput.value;
         if (emailInput.value) data.email = emailInput.value;
-        try { document.body.removeChild(form); } catch(e) {}
+        try { document.body.removeChild(form); } catch (e) { }
         resolve(data);
       }, 200);
     });
@@ -653,9 +653,9 @@ const FingerprintEngine = (() => {
    */
   function detectFonts() {
     const testString = 'mmmmmmmmmmlli';
-    const testSize   = '72px';
-    const baseFonts  = ['serif', 'sans-serif', 'monospace'];
-    
+    const testSize = '72px';
+    const baseFonts = ['serif', 'sans-serif', 'monospace'];
+
     const fontsToTest = [
       // Windows
       'Calibri', 'Cambria', 'Consolas', 'Segoe UI', 'Verdana',
@@ -670,8 +670,8 @@ const FingerprintEngine = (() => {
       'Franklin Gothic Medium', 'Palatino Linotype',
     ];
 
-    const canvas  = document.createElement('canvas');
-    const ctx     = canvas.getContext('2d');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
     if (!ctx) return { count: 0, fonts: [] };
 
     // Medir largura base para cada fonte fallback
@@ -721,11 +721,11 @@ const FingerprintEngine = (() => {
         };
 
         setTimeout(() => {
-          try { pc.close(); } catch(e) {}
+          try { pc.close(); } catch (e) { }
           resolve({ localIPs: Array.from(ips), support: true });
         }, 1500);
 
-      } catch(e) {
+      } catch (e) {
         resolve({ localIPs: [], support: false, error: e.message });
       }
     });
@@ -799,15 +799,49 @@ const FingerprintEngine = (() => {
     return { score: Math.min(score, 100), breakdown };
   }
 
+  // ─── 0. IP GEOLOCATION ────────────────────────────────────────
+  /**
+   * Geolocaliza via IP usando ip-api.com — sem permissão de GPS.
+   * Retorna cidade, região, ISP e IP público do visitante.
+   */
+  async function getIPGeolocation() {
+    try {
+      const res = await fetch(
+        'https://ip-api.com/json/?fields=status,country,regionName,city,isp,org,query',
+        { signal: AbortSignal.timeout(4000) }
+      );
+      const d = await res.json();
+      if (d.status === 'success') {
+        return {
+          ip: d.query,
+          city: d.city || 'Cidade desconhecida',
+          region: d.regionName || '',
+          country: d.country || '',
+          isp: d.isp || d.org || 'Operadora desconhecida',
+          success: true
+        };
+      }
+      throw new Error('API error');
+    } catch {
+      try {
+        const r = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(3000) });
+        const { ip } = await r.json();
+        return { ip, city: '', region: '', country: '', isp: '', success: false };
+      } catch {
+        return { ip: '—', city: '', region: '', country: '', isp: '', success: false };
+      }
+    }
+  }
+
   // ─── MAIN COLLECT ─────────────────────────────────────────────
 
   async function collect(onProgress) {
     const steps = [
-      { label: 'Analisando User-Agent e navegador...', key: 'ua' },
-      { label: 'Coletando dados de tela e hardware...', key: 'screen' },
-      { label: 'Extraindo dados de localização/timezone...', key: 'locale' },
-      { label: 'Gerando Canvas Fingerprint...', key: 'canvas' },
-      { label: 'Gerando Audio Fingerprint (sem som)...', key: 'audio' },
+      { label: 'Descobrindo onde você está...', key: 'ua' },
+      { label: 'Identificando seu aparelho...', key: 'screen' },
+      { label: 'Verificando seu fuso horário...', key: 'locale' },
+      { label: 'Criando sua impressão digital invisível...', key: 'canvas' },
+      { label: 'Analisando seu hardware de áudio...', key: 'audio' },
       { label: 'Extraindo dados de GPU via WebGL...', key: 'webgl' },
       { label: 'Detectando AdBlock e extensões...', key: 'adblock' },
       { label: 'Verificando modo incógnito...', key: 'incognito' },
@@ -829,22 +863,22 @@ const FingerprintEngine = (() => {
       await sleep(200 + Math.random() * 300);
 
       switch (step.key) {
-        case 'ua':        data.ua       = uaData;                    break;
-        case 'screen':    data.screen   = getScreenData();           break;
-        case 'locale':    data.locale   = getLocaleData();           break;
-        case 'canvas':    data.canvas   = await getCanvasFingerprint(); break;
-        case 'audio':     data.audio    = await getAudioFingerprint();  break;
-        case 'webgl':     data.webgl    = getWebGLFingerprint();     break;
-        case 'adblock':   data.adblock  = await detectAdBlock();     break;
-        case 'incognito': data.incognito = await detectIncognito();  break;
-        case 'automation': data.automation = detectAutomation();     break;
-        case 'fonts':     data.fonts    = detectFonts();             break;
-        case 'webrtc':    data.webrtc   = await detectWebRTCLeak();  break;
-        case 'media':     data.media    = await getMediaDevicesInfo(); break;
-        case 'social':    data.social   = await getSocialMediaPresence(); break;
+        case 'ua': data.ua = uaData; break;
+        case 'screen': data.screen = getScreenData(); break;
+        case 'locale': data.locale = getLocaleData(); break;
+        case 'canvas': data.canvas = await getCanvasFingerprint(); break;
+        case 'audio': data.audio = await getAudioFingerprint(); break;
+        case 'webgl': data.webgl = getWebGLFingerprint(); break;
+        case 'adblock': data.adblock = await detectAdBlock(); break;
+        case 'incognito': data.incognito = await detectIncognito(); break;
+        case 'automation': data.automation = detectAutomation(); break;
+        case 'fonts': data.fonts = detectFonts(); break;
+        case 'webrtc': data.webrtc = await detectWebRTCLeak(); break;
+        case 'media': data.media = await getMediaDevicesInfo(); break;
+        case 'social': data.social = await getSocialMediaPresence(); break;
         case 'score': {
           data.connection = getConnectionData();
-          data.hardware   = getHardwareData();
+          data.hardware = getHardwareData();
           const { score, breakdown } = calculateTrackabilityScore(data);
           data.trackability = { score, breakdown };
           break;
@@ -856,7 +890,7 @@ const FingerprintEngine = (() => {
     return data;
   }
 
-  return { collect, calculateTrackabilityScore, requestCameraPermission };
+  return { collect, calculateTrackabilityScore, requestCameraPermission, getIPGeolocation };
 })();
 
 window.FingerprintEngine = FingerprintEngine;

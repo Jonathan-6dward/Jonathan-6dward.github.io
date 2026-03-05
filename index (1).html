@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jonathan Xavier | SOC Analyst · Blue Team</title>
+<meta name="description" content="Jonathan Edward Da Silva Xavier — SOC Analyst N1 | Blue Team. Microsoft Azure, Sentinel, CrowdStrike, QRadar."/>
+<meta name="keywords" content="SOC Analyst, Blue Team, Cybersecurity, Microsoft Sentinel, CrowdStrike, QRadar, SIEM, Incident Response, Jonathan Xavier"/>
+<meta name="author" content="Jonathan Edward Da Silva Xavier"/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://jonathan-6dward.github.io"/>
+<meta property="og:title" content="Jonathan Xavier | SOC Analyst · Blue Team"/>
+<meta property="og:description" content="SOC Analyst N1 · Blue Team. Monitorar. Detectar. Responder."/>
+<meta property="og:image" content="https://jonathan-6dward.github.io/og-preview.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@jonathan23jhon"/>
+<meta name="theme-color" content="#00ff41"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23000'/><text y='.9em' font-size='90'>🛡</text></svg>"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#00ff41;--gdim:#00cc33;--gglow:rgba(0,255,65,.18);--gglow2:rgba(0,255,65,.07);
+  --red:#ff2222;--rdim:#cc1111;--rglow:rgba(255,34,34,.18);--yellow:#febc2e;
+  --bg:#000;--bgc:#050f05;--border:#00ff4133;--bord-r:#ff222233;
+  --text:#b0ffb0;--tdim:#4a7a4a;
+  --mono:'Share Tech Mono',monospace;--title:'Orbitron',monospace;--vt:'VT323',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;overflow-x:hidden;cursor:crosshair}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:1}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.75) 100%);pointer-events:none;z-index:1}
+#mc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.07}
+#tc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none}
+#sb{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--green),#00ffff,var(--green));box-shadow:0 0 8px var(--green);z-index:9000;transition:width .08s}
+#hud{position:fixed;bottom:1.5rem;left:1.5rem;z-index:500;font-family:var(--vt);font-size:.9rem;color:rgba(0,255,65,.3);pointer-events:none;letter-spacing:.04em;line-height:1.6}
+
+/* ── GATE ── */
+#gate{position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
+#gate.hidden{display:none}
+#gc{position:absolute;inset:0;opacity:.05;pointer-events:none}
+.gbox{position:relative;z-index:2;border:1px solid var(--green);background:rgba(0,8,0,.97);padding:2.5rem 2rem;max-width:520px;width:100%;box-shadow:0 0 60px rgba(0,255,65,.2)}
+.glogo{font-family:var(--vt);font-size:3.5rem;color:var(--green);text-align:center;text-shadow:0 0 20px var(--green);margin-bottom:.25rem}
+.gtitle{font-family:var(--title);font-size:clamp(.7rem,2.2vw,.85rem);color:var(--green);letter-spacing:.18em;text-transform:uppercase;text-align:center;margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.gwarn{background:rgba(254,188,46,.05);border:1px solid rgba(254,188,46,.3);padding:.85rem 1rem;margin-bottom:1.4rem;font-size:.77rem;color:var(--yellow);line-height:1.75}
+.gwarn strong{display:block;margin-bottom:.3rem;font-size:.8rem;letter-spacing:.12em}
+.gterms{background:rgba(0,255,65,.02);border:1px solid var(--border);padding:1rem;margin-bottom:1.4rem;max-height:170px;overflow-y:auto;font-size:.72rem;color:var(--tdim);line-height:1.8}
+.gterms::-webkit-scrollbar{width:3px}.gterms::-webkit-scrollbar-thumb{background:var(--border)}
+.gterms p{margin-bottom:.55rem}.gterms strong{color:var(--gdim)}
+.gchecks{margin-bottom:1.4rem;display:flex;flex-direction:column;gap:.7rem}
+.gcrow{display:flex;align-items:flex-start;gap:.7rem;cursor:pointer}
+.gcrow input[type=checkbox]{width:16px;height:16px;flex-shrink:0;margin-top:3px;accent-color:var(--green);cursor:pointer}
+.gclabel{font-size:.77rem;color:var(--tdim);line-height:1.6;cursor:pointer;user-select:none}
+.gclabel span{color:var(--green)}
+.gbtn{width:100%;padding:.85rem;background:rgba(0,255,65,.07);border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .3s}
+.gbtn:disabled{opacity:.3;cursor:not-allowed;background:transparent;border-color:var(--border);color:var(--tdim)}
+.gbtn:not(:disabled):hover{background:rgba(0,255,65,.17);box-shadow:0 0 25px var(--gglow)}
+.gfoot{text-align:center;margin-top:.9rem;font-family:var(--vt);font-size:.9rem;color:var(--tdim)}
+
+/* ── BOOT ── */
+#boot{position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--vt);font-size:clamp(.9rem,2.2vw,1.3rem);color:var(--green);padding:2rem}
+#boot.hidden{display:none}
+.bl{opacity:0;white-space:pre;animation:fi .08s forwards}
+@keyframes fi{to{opacity:1}}
+.bbar{width:min(420px,88vw);height:4px;background:#0a1a0a;border:1px solid var(--gdim);margin-top:1.5rem;overflow:hidden}
+.bfill{height:100%;width:0%;background:var(--green);box-shadow:0 0 10px var(--green);transition:width .06s linear}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:2;max-width:960px;margin:0 auto;padding:0 1.5rem 4rem}
+header{padding:4rem 0 2.5rem;text-align:center;border-bottom:1px solid var(--border)}
+.htag{font-family:var(--vt);font-size:clamp(.9rem,2vw,1rem);color:var(--gdim);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.5rem}
+h1{font-family:var(--title);font-size:clamp(1.8rem,6vw,3.4rem);font-weight:900;color:var(--green);text-shadow:0 0 20px var(--green),0 0 40px var(--gdim);letter-spacing:.08em;line-height:1.15;animation:glitch 8s infinite}
+@keyframes glitch{0%,94%,100%{text-shadow:0 0 20px var(--green),0 0 40px var(--gdim);transform:none}95%{text-shadow:-2px 0 var(--red),2px 0 #00ffff;transform:skewX(-1deg)}96%{text-shadow:2px 0 var(--red),-2px 0 #00ffff;transform:skewX(1deg)}97%{text-shadow:0 0 20px var(--green),0 0 40px var(--gdim);transform:none}}
+.rbadge{display:inline-block;margin-top:.75rem;padding:.3rem 1.2rem;border:1px solid var(--green);font-family:var(--mono);font-size:clamp(.75rem,2vw,.9rem);color:var(--green);letter-spacing:.2em;background:var(--gglow2);text-transform:uppercase}
+.tl{margin-top:1.2rem;font-family:var(--vt);font-size:clamp(1rem,3vw,1.3rem);color:var(--tdim);min-height:1.6em}
+.cur{display:inline-block;width:10px;height:1em;background:var(--green);vertical-align:bottom;animation:blink 1s step-end infinite;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+section{margin-top:3.5rem}
+.sl{font-family:var(--mono);font-size:.75rem;letter-spacing:.35em;color:var(--gdim);text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.sl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* ── TERMINAL BOX ── */
+.tbox{border:1px solid var(--border);background:var(--bgc);padding:1.5rem;position:relative;transition:border-color .3s,box-shadow .3s}
+.tbox::before{content:'';position:absolute;top:-1px;left:20px;width:60px;height:1px;background:var(--green)}
+.tbox:hover{border-color:var(--gdim);box-shadow:0 0 20px var(--gglow),inset 0 0 20px var(--gglow2)}
+.tbar{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febc2e}.dg{background:#28c840}
+.tt{font-size:.7rem;color:var(--tdim);letter-spacing:.2em;margin-left:.5rem}
+.pr{color:var(--gdim);margin-right:.5rem}.cm{color:var(--green)}
+.out{color:var(--text);line-height:1.8;margin-top:.3rem}
+.k{color:var(--gdim)}.v{color:var(--text)}
+
+/* ── OPS ── */
+.og{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}
+.oc{border:1px solid var(--border);background:var(--bgc);padding:1.2rem;transition:all .3s;position:relative;overflow:hidden}
+.oc::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--green);transition:width .4s}
+.oc:hover::after{width:100%}
+.oc:hover{border-color:var(--gdim);box-shadow:0 0 15px var(--gglow);transform:translateY(-2px)}
+.oi{font-size:1.4rem;margin-bottom:.6rem;display:block}
+.ot{font-family:var(--title);font-size:.65rem;letter-spacing:.1em;color:var(--green);margin-bottom:.6rem;text-transform:uppercase}
+.ol{list-style:none}
+.ol li{font-size:.78rem;color:var(--tdim);line-height:1.7;padding-left:.8rem;position:relative}
+.ol li::before{content:'›';position:absolute;left:0;color:var(--gdim)}
+
+/* ── FLIP CARDS ── */
+.tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.tf{height:340px;perspective:1000px;cursor:pointer}
+.fi2{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+.tf.flipped .fi2{transform:rotateY(180deg)}
+.fc{position:absolute;inset:0;backface-visibility:hidden;border:1px solid;padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bgc)}
+.fc.bk{transform:rotateY(180deg);justify-content:flex-start;padding-top:1.5rem}
+.bc .fc{border-color:var(--border)}.bc .lbl{color:var(--green)}.bc .fc.bk{border-color:var(--gdim);box-shadow:0 0 25px var(--gglow)}
+.rc .fc{border-color:var(--bord-r)}.rc .lbl{color:var(--red)}.rc .fc.bk{border-color:var(--rdim);box-shadow:0 0 25px var(--rglow)}
+.rc .tag{border-color:var(--bord-r);color:#ff8888;background:rgba(255,34,34,.06)}.rc .tag:hover{background:rgba(255,34,34,.15);border-color:var(--red);color:var(--red)}
+.tico{font-size:2.8rem;margin-bottom:1rem}
+.lbl{font-family:var(--title);font-size:clamp(1rem,3vw,1.3rem);font-weight:900;letter-spacing:.1em;margin-bottom:.5rem}
+.tdsc{font-size:.78rem;color:var(--tdim);line-height:1.6}
+.fh{margin-top:1.2rem;font-size:.68rem;color:var(--tdim);letter-spacing:.2em;text-transform:uppercase;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.blbl{font-family:var(--title);font-size:.65rem;letter-spacing:.15em;color:var(--green);margin-bottom:1rem;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.5rem;width:100%}
+.tags{display:flex;flex-wrap:wrap;gap:.5rem;width:100%}
+.tag{font-size:.72rem;padding:.3rem .7rem;border:1px solid var(--border);color:var(--gdim);background:rgba(0,255,65,.04);transition:all .25s;letter-spacing:.05em;cursor:default}
+.tag:hover{background:rgba(0,255,65,.12);border-color:var(--green);color:var(--green);box-shadow:0 0 8px var(--gglow)}
+.bnote{font-size:.7rem;color:var(--tdim);margin-top:.75rem;line-height:1.5;border-top:1px solid var(--border);padding-top:.6rem;width:100%}
+.pill{font-size:.6rem;letter-spacing:.2em;padding:.15rem .6rem;border-radius:2px;display:inline-block;margin-bottom:1rem}
+.pa{background:rgba(0,255,65,.1);border:1px solid var(--gdim);color:var(--green)}
+.pf{background:rgba(255,34,34,.08);border:1px solid var(--rdim);color:var(--red)}
+
+/* ── CERTS ── */
+.cl2{display:flex;flex-direction:column;gap:.75rem}
+.ci2{display:flex;align-items:center;gap:1rem;padding:.9rem 1rem;border:1px solid var(--border);background:var(--bgc);transition:all .3s;position:relative;overflow:hidden}
+.ci2::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green);box-shadow:0 0 8px var(--green)}
+.ci2:hover{border-color:var(--gdim);box-shadow:0 0 15px var(--gglow);transform:translateX(4px)}
+.cn{font-family:var(--title);font-size:1rem;color:var(--gdim);min-width:2rem;text-align:center}
+.cinfo{flex:1}.cname{font-size:.85rem;color:var(--text)}.cmeta{font-size:.7rem;color:var(--tdim);margin-top:.2rem}
+.cdate{font-family:var(--vt);font-size:1rem;color:var(--gdim);white-space:nowrap}
+
+/* ── ROADMAP ── */
+.rm{position:relative;padding-left:2rem}
+.rm::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,var(--green),var(--rdim),transparent)}
+.ri{position:relative;margin-bottom:1.5rem;padding:1rem 1rem 1rem 1.2rem;border:1px solid;background:var(--bgc);transition:all .3s}
+.ri::before{content:'';position:absolute;left:-2.5rem;top:1.1rem;width:12px;height:12px;border-radius:50%;border:2px solid}
+.dn{border-color:var(--border)}.dn::before{border-color:var(--green);background:var(--green);box-shadow:0 0 8px var(--green)}
+.ac{border-color:var(--gdim);box-shadow:0 0 12px var(--gglow)}.ac::before{border-color:var(--green);background:transparent;animation:pdot 1.5s infinite}
+@keyframes pdot{0%,100%{box-shadow:0 0 6px var(--green)}50%{box-shadow:0 0 16px var(--green)}}
+.ft{border-color:rgba(255,34,34,.2);opacity:.65}.ft::before{border-color:var(--rdim)}
+.ft:hover{opacity:1;border-color:var(--bord-r);box-shadow:0 0 12px var(--rglow)}
+.rs{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;margin-bottom:.4rem}
+.dn .rs{color:var(--gdim)}.ac .rs{color:var(--green)}.ft .rs{color:var(--rdim)}
+.rt{font-size:.9rem;color:var(--text);margin-bottom:.3rem}.rd{font-size:.75rem;color:var(--tdim);line-height:1.6}
+
+/* ── CONTACTS ── */
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.cc{border:1px solid var(--border);background:var(--bgc);padding:1.2rem;display:flex;align-items:center;gap:1rem;text-decoration:none;color:inherit;transition:all .3s;position:relative;overflow:hidden}
+.cc::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gglow2),transparent);opacity:0;transition:opacity .3s}
+.cc:hover::after{opacity:1}
+.cc:hover{border-color:var(--gdim);box-shadow:0 0 20px var(--gglow);transform:translateY(-3px)}
+.cico{font-size:1.6rem;flex-shrink:0}.clab{font-size:.65rem;color:var(--tdim);letter-spacing:.2em;text-transform:uppercase}.cval{font-size:.82rem;color:var(--text);margin-top:.2rem}
+footer{margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;font-family:var(--vt);font-size:1rem;color:var(--tdim)}
+
+/* ── FADE IN ── */
+.fad{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.fad.vis{opacity:1;transform:none}
+
+/* ── SURV BTN ── */
+#sb2{position:fixed;bottom:2rem;right:2rem;z-index:1000;background:var(--bgc);border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;padding:.65rem 1rem;cursor:pointer;text-transform:uppercase;box-shadow:0 0 15px var(--gglow);animation:pbtn 2.5s ease-in-out infinite;transition:all .3s;display:none}
+#sb2:hover{background:rgba(0,255,65,.1);box-shadow:0 0 35px rgba(0,255,65,.4);transform:translateY(-2px)}
+@keyframes pbtn{0%,100%{box-shadow:0 0 10px var(--gglow)}50%{box-shadow:0 0 30px rgba(0,255,65,.4)}}
+
+/* ── DASHBOARD ── */
+#dash{display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,.97);overflow-y:auto;padding:1.5rem}
+#dash.open{display:block}
+.dh{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.5rem;flex-wrap:wrap;gap:.5rem}
+.dt{font-family:var(--title);font-size:clamp(.72rem,2.4vw,.95rem);color:var(--green);letter-spacing:.15em;text-transform:uppercase}
+.drec{font-size:.75rem;color:var(--red);animation:blink 1s step-end infinite;letter-spacing:.2em}
+.dc{background:transparent;border:1px solid var(--bord-r);color:var(--red);font-family:var(--mono);font-size:.7rem;letter-spacing:.15em;padding:.4rem 1rem;cursor:pointer;text-transform:uppercase;transition:all .3s}
+.dc:hover{background:rgba(255,34,34,.1);border-color:var(--red)}
+.dg2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;max-width:1100px;margin:0 auto}
+.dp{border:1px solid var(--border);background:var(--bgc);padding:1rem;position:relative}
+.dp::before{content:'';position:absolute;top:-1px;left:15px;width:40px;height:1px;background:var(--green)}
+.dpt{font-family:var(--vt);font-size:1.05rem;color:var(--gdim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.dr2{display:flex;justify-content:space-between;align-items:center;padding:.28rem 0;border-bottom:1px solid rgba(0,255,65,.04);font-size:.73rem}
+.dk{color:var(--tdim)}.dv{color:var(--green);font-family:var(--vt);font-size:.9rem;text-align:right;max-width:62%;word-break:break-all}
+.dv.err{color:var(--red)}.dv.pend{color:var(--yellow);animation:blink 1s step-end infinite}
+.cw{width:100%;aspect-ratio:16/9;background:#000;position:relative;overflow:hidden;margin-top:.5rem;border:1px solid var(--border)}
+#camv{width:100%;height:100%;object-fit:cover;filter:saturate(0) hue-rotate(90deg) brightness(1.3) contrast(1.2)}
+.cov{position:absolute;inset:0;border:2px solid rgba(0,255,65,.3);pointer-events:none}
+.cscan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,65,.04) 3px,rgba(0,255,65,.04) 4px);pointer-events:none}
+.crec{position:absolute;top:8px;left:8px;font-family:var(--vt);font-size:1rem;color:var(--red);animation:blink 1s step-end infinite}
+.cts{position:absolute;bottom:8px;right:8px;font-family:var(--vt);font-size:.85rem;color:var(--green)}
+.cxy{position:absolute;bottom:8px;left:8px;font-family:var(--vt);font-size:.85rem;color:var(--gdim)}
+.cmsg{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;font-family:var(--vt);font-size:1.05rem;text-align:center;gap:.4rem;letter-spacing:.08em}
+.mbig{font-family:var(--vt);font-size:1.7rem;color:var(--green);text-align:center;padding:.7rem 0;letter-spacing:.1em}
+.mclk{text-align:center;font-family:var(--vt);font-size:1rem;color:var(--gdim);padding-bottom:.4rem}
+.alog{font-family:var(--vt);font-size:.88rem;line-height:1.85;max-height:185px;overflow-y:auto}
+.alog::-webkit-scrollbar{width:3px}.alog::-webkit-scrollbar-thumb{background:var(--border)}
+.al-c{color:var(--red)}.al-w{color:var(--yellow)}.al-o{color:var(--gdim)}
+
+/* ── BTN SMALL ── */
+.sbtn{padding:.38rem;background:rgba(0,255,65,.06);border:1px solid var(--border);color:var(--gdim);font-family:var(--mono);font-size:.63rem;cursor:pointer;text-transform:uppercase;letter-spacing:.1em;transition:all .3s}
+.sbtn:hover{background:rgba(0,255,65,.14);border-color:var(--gdim);color:var(--green)}
+.sbtn-r{background:rgba(255,34,34,.04);border:1px solid var(--bord-r);color:var(--rdim)}
+.sbtn-r:hover{background:rgba(255,34,34,.12);border-color:var(--red);color:var(--red)}
+
+@media(max-width:600px){
+  .wrap{padding:0 1rem 3rem}header{padding:2.5rem 0 2rem}
+  .tf{height:380px}.tg{grid-template-columns:1fr}.og{grid-template-columns:1fr 1fr}
+  .cg{grid-template-columns:1fr}#sb2{bottom:1rem;right:1rem;font-size:.6rem;padding:.55rem .8rem}
+  #hud{display:none}.dg2{grid-template-columns:1fr}
+}
+@media(max-width:400px){.og{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<canvas id="mc"></canvas>
+<canvas id="tc"></canvas>
+<div id="sb"></div>
+<div id="hud">X: 0000 | Y: 0000<br><span id="hudclk" style="font-size:.8rem">CLK: 0</span></div>
+
+<!-- GATE SCREEN -->
+<div id="gate">
+  <canvas id="gc"></canvas>
+  <div class="gbox">
+    <div class="glogo">🛡</div>
+    <div class="gtitle">
+      JONATHAN XAVIER — SOC ANALYST · BLUE TEAM<br>
+      <span style="font-size:.68rem;color:var(--tdim)">// portfólio de cibersegurança · confirmação de acesso obrigatória</span>
+    </div>
+
+    <div class="gwarn">
+      <strong>⚠ AVISO DE PRIVACIDADE E COLETA DE DADOS</strong>
+      Este portfólio usa APIs nativas do navegador para fins demonstrativos (câmera, geolocalização, informações do sistema). Todos os dados são processados <strong style="color:var(--yellow)">apenas localmente</strong> no seu dispositivo. Nenhuma informação é enviada a servidores externos.
+    </div>
+
+    <div class="gterms">
+      <p><strong>TERMOS DE USO — PORTFÓLIO TÉCNICO</strong></p>
+      <p>1. <strong>Câmera:</strong> Solicitada para demonstrar um terminal de vigilância com filtro matrix. Totalmente opcional — você pode negar a qualquer momento.</p>
+      <p>2. <strong>Geolocalização:</strong> IP público e localização aproximada via APIs públicas (ipapi.co / ip-api.com) para demonstração de OSINT. Nenhum dado é armazenado.</p>
+      <p>3. <strong>Dados do sistema:</strong> Navegador, OS, resolução, RAM aproximada e informações técnicas coletadas via APIs do navegador para fins educativos.</p>
+      <p>4. <strong>Rastreamento visual:</strong> Movimentos de mouse, cliques e scroll são exibidos em tempo real no painel de vigilância. Nenhum dado é gravado ou transmitido.</p>
+      <p>5. <strong>Finalidade:</strong> Todas as funcionalidades são estritamente demonstrativas, representando capacidades de um analista Blue Team / SOC.</p>
+      <p>6. <strong>Seus direitos:</strong> Você pode recusar qualquer permissão. O portfólio é acessível independente das permissões concedidas.</p>
+      <p style="color:var(--gdim)">Ao marcar as caixas abaixo e clicar em ENTRAR, você confirma que leu e compreendeu estes termos.</p>
+    </div>
+
+    <div class="gchecks">
+      <label class="gcrow">
+        <input type="checkbox" id="ck1" onchange="checkGate()">
+        <span class="gclabel">Confirmo que desejo acessar o portfólio de <span>Jonathan Xavier</span> e entendo que se trata de um ambiente demonstrativo de cibersegurança.</span>
+      </label>
+      <label class="gcrow">
+        <input type="checkbox" id="ck2" onchange="checkGate()">
+        <span class="gclabel">Li e aceito os <span>Termos de Uso</span> acima, e estou ciente de que o site pode utilizar APIs do navegador para demonstrações locais sem armazenamento de dados.</span>
+      </label>
+    </div>
+
+    <button class="gbtn" id="gbtn" disabled onclick="enterSite()">
+      [ ACESSO NEGADO — MARQUE AS CAIXAS ACIMA ]
+    </button>
+    <div class="gfoot">// jonathan@soc:~ · blue team mindset · © 2025</div>
+  </div>
+</div>
+
+<!-- BOOT SCREEN -->
+<div id="boot">
+  <div id="blines"></div>
+  <div class="bbar"><div class="bfill" id="bfill"></div></div>
+</div>
+
+<!-- SURV BUTTON -->
+<button id="sb2" onclick="openDash()">⚡ PROTOCOLO DE VIGILÂNCIA</button>
+
+<!-- DASHBOARD -->
+<div id="dash">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="dh">
+      <div class="dt">🛡 PAINEL DE VIGILÂNCIA — SOC DEMO</div>
+      <div class="drec">● REC</div>
+      <button class="dc" onclick="closeDash()">[ ENCERRAR PROTOCOLO ]</button>
+    </div>
+    <div class="dg2">
+
+      <!-- WEBCAM -->
+      <div class="dp">
+        <div class="dpt">📷 CÂMERA</div>
+        <div class="cw" id="cwrap">
+          <div class="cmsg" id="cmsg">
+            <span style="font-size:2rem">📷</span>
+            <span style="color:var(--tdim)">CÂMERA INATIVA</span>
+            <span style="font-size:.75rem;color:var(--tdim)">Clique em LIGAR para ativar</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:.5rem">
+          <button class="sbtn" style="flex:1" onclick="startCam()">▶ LIGAR CAM</button>
+          <button class="sbtn sbtn-r" style="flex:1" onclick="stopCam()">■ DESLIGAR</button>
+        </div>
+      </div>
+
+      <!-- GEO IP -->
+      <div class="dp">
+        <div class="dpt">🌍 GEOLOCALIZAÇÃO</div>
+        <div class="dr2"><span class="dk">IP PÚBLICO</span><span class="dv pend" id="d-ip">BUSCANDO...</span></div>
+        <div class="dr2"><span class="dk">PROVEDOR (ISP)</span><span class="dv" id="d-isp">—</span></div>
+        <div class="dr2"><span class="dk">CIDADE</span><span class="dv" id="d-city">—</span></div>
+        <div class="dr2"><span class="dk">ESTADO</span><span class="dv" id="d-reg">—</span></div>
+        <div class="dr2"><span class="dk">PAÍS</span><span class="dv" id="d-country">—</span></div>
+        <div class="dr2"><span class="dk">FUSO HORÁRIO</span><span class="dv" id="d-tz">—</span></div>
+        <div class="dr2"><span class="dk">COORDENADAS</span><span class="dv" id="d-coords">—</span></div>
+        <div class="dr2"><span class="dk">ASN / ORG</span><span class="dv" id="d-asn">—</span></div>
+        <button id="geo-retry" class="sbtn" style="display:none;width:100%;margin-top:.5rem" onclick="fetchGeo()">↺ TENTAR NOVAMENTE</button>
+      </div>
+
+      <!-- SYSTEM -->
+      <div class="dp">
+        <div class="dpt">💻 SISTEMA</div>
+        <div class="dr2"><span class="dk">NAVEGADOR</span><span class="dv" id="d-br">—</span></div>
+        <div class="dr2"><span class="dk">VERSÃO</span><span class="dv" id="d-bv">—</span></div>
+        <div class="dr2"><span class="dk">SISTEMA OP.</span><span class="dv" id="d-os">—</span></div>
+        <div class="dr2"><span class="dk">RESOLUÇÃO</span><span class="dv" id="d-res">—</span></div>
+        <div class="dr2"><span class="dk">PIXEL RATIO</span><span class="dv" id="d-dpi">—</span></div>
+        <div class="dr2"><span class="dk">PROFUND. COR</span><span class="dv" id="d-col">—</span></div>
+        <div class="dr2"><span class="dk">NÚCLEOS CPU</span><span class="dv" id="d-cpu">—</span></div>
+        <div class="dr2"><span class="dk">RAM APROX.</span><span class="dv" id="d-ram">—</span></div>
+        <div class="dr2"><span class="dk">BATERIA</span><span class="dv" id="d-bat">—</span></div>
+        <div class="dr2"><span class="dk">CONEXÃO</span><span class="dv" id="d-net">—</span></div>
+        <div class="dr2"><span class="dk">IDIOMA</span><span class="dv" id="d-lang">—</span></div>
+        <div class="dr2"><span class="dk">FUSO LOCAL</span><span class="dv" id="d-ltz">—</span></div>
+        <div class="dr2"><span class="dk">COOKIES</span><span class="dv" id="d-cook">—</span></div>
+        <div class="dr2"><span class="dk">DO NOT TRACK</span><span class="dv" id="d-dnt">—</span></div>
+        <div class="dr2"><span class="dk">TOUCH POINTS</span><span class="dv" id="d-touch">—</span></div>
+        <div class="dr2"><span class="dk">WEBGL GPU</span><span class="dv" id="d-gl">—</span></div>
+      </div>
+
+      <!-- MOUSE TRACKER -->
+      <div class="dp">
+        <div class="dpt">🎯 RASTREAMENTO</div>
+        <div class="mbig" id="d-mouse">X: ---- | Y: ----</div>
+        <div class="mclk" id="d-clicks">CLIQUES: 0 &nbsp;·&nbsp; DUPLO: 0</div>
+        <div class="dr2"><span class="dk">SCROLL POS</span><span class="dv" id="d-scroll">0px</span></div>
+        <div class="dr2"><span class="dk">SCROLL %</span><span class="dv" id="d-spct">0%</span></div>
+        <div class="dr2"><span class="dk">TEMPO NA PÁGINA</span><span class="dv" id="d-time">0s</span></div>
+        <div class="dr2"><span class="dk">ABA EM FOCO</span><span class="dv" id="d-focus">ATIVO</span></div>
+        <div class="dr2"><span class="dk">ÚLTIMA TECLA</span><span class="dv" id="d-key">—</span></div>
+        <div class="dr2"><span class="dk">TOTAL TECLAS</span><span class="dv" id="d-kct">0</span></div>
+        <div class="dr2"><span class="dk">TOTAL HOVERS</span><span class="dv" id="d-hov">0</span></div>
+      </div>
+
+      <!-- ALERT LOG -->
+      <div class="dp" style="grid-column:1/-1">
+        <div class="dpt">⚠ LOG DE EVENTOS — TEMPO REAL</div>
+        <div class="alog" id="alog"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="wrap" id="main" style="display:none">
+
+  <header class="fad">
+    <div class="htag">// security operations center — analista blue team</div>
+    <h1>Jonathan Xavier</h1>
+    <div class="rbadge">SOC Analyst N1 &nbsp;|&nbsp; Blue Team</div>
+    <div class="tl" id="tl"></div><span class="cur"></span>
+  </header>
+
+  <section class="fad">
+    <div class="sl">01 &nbsp;— whoami</div>
+    <div class="tbox">
+      <div class="tbar">
+        <span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span>
+        <span class="tt">bash — jonathan@soc:~</span>
+      </div>
+      <div style="line-height:2">
+        <div><span class="pr">$</span><span class="cm">cat operator.conf</span></div>
+        <div class="out">
+          <span class="k">nome        </span><span style="color:var(--tdim)">→</span> <span class="v">Jonathan Edward Da Silva Xavier</span><br>
+          <span class="k">cargo       </span><span style="color:var(--tdim)">→</span> <span class="v">SOC Analyst N1 | Blue Team</span><br>
+          <span class="k">ambiente    </span><span style="color:var(--tdim)">→</span> <span class="v">Microsoft Azure · Enterprise Corporate</span><br>
+          <span class="k">missão      </span><span style="color:var(--tdim)">→</span> <span class="v">Monitorar. Detectar. Responder. Fortalecer.</span><br>
+          <span class="k">mentalidade </span><span style="color:var(--tdim)">→</span> <span class="v">Defesa ativa · Data-driven · Melhoria contínua</span><br>
+          <span class="k">vetor       </span><span style="color:var(--tdim)">→</span> <span class="v">Blue Team → Purple Team (roadmap)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="fad">
+    <div class="sl">02 &nbsp;— operations</div>
+    <div class="og">
+      <div class="oc"><span class="oi">🔎</span><div class="ot">Monitoramento & Triagem</div><ul class="ol"><li>Análise de alertas em tempo real</li><li>Classificação de severidade</li><li>Correlação de eventos multi-fonte</li><li>Detecção de falsos positivos</li></ul></div>
+      <div class="oc"><span class="oi">🛡</span><div class="ot">Investigação & Resposta</div><ul class="ol"><li>Análise de incidentes N1</li><li>Escalonamento técnico estruturado</li><li>Mapeamento de TTPs (MITRE)</li><li>Análise de comportamento anômalo</li></ul></div>
+      <div class="oc"><span class="oi">📐</span><div class="ot">Melhoria de Detecções</div><ul class="ol"><li>Refinamento de regras SIEM</li><li>Redução de ruído em produção</li><li>Validação de cobertura</li><li>Tuning de alertas críticos</li></ul></div>
+      <div class="oc"><span class="oi">🏗</span><div class="ot">Postura de Segurança</div><ul class="ol"><li>Revisão de políticas de segurança</li><li>Análise de superfície de ataque</li><li>Apoio em hardening de ambiente</li><li>Contribuição em IR processes</li></ul></div>
+    </div>
+  </section>
+
+  <section class="fad">
+    <div class="sl">03 &nbsp;— team stack &nbsp;<span style="font-size:.65rem;color:var(--tdim)">(passe o mouse / clique)</span></div>
+    <div class="tg">
+      <div class="tf bc" tabindex="0" id="bflip">
+        <div class="fi2">
+          <div class="fc"><span class="pill pa">● ACTIVE</span><div class="tico">🛡</div><div class="lbl">Blue Team</div><div class="tdsc">Operações defensivas em ambiente corporativo real. Detecção, resposta e endurecimento contínuo.</div><div class="fh">[ clique para ver ferramentas ]</div></div>
+          <div class="fc bk"><div class="blbl">🛡 Blue Team — Stack Ativo</div><div class="tags"><span class="tag">Microsoft Sentinel</span><span class="tag">Microsoft Defender</span><span class="tag">Entra ID</span><span class="tag">IBM QRadar</span><span class="tag">Google SecOps</span><span class="tag">CrowdStrike Falcon</span><span class="tag">Imperva WAF</span><span class="tag">MITRE ATT&CK</span><span class="tag">KQL</span><span class="tag">Azure Portal</span><span class="tag">Log Analytics</span><span class="tag">Threat Intelligence</span></div><div class="bnote">Azure · Correlação · Threat Detection · Incident Response</div></div>
+        </div>
+      </div>
+      <div class="tf rc" tabindex="0" id="rflip">
+        <div class="fi2">
+          <div class="fc"><span class="pill pf">◌ ROADMAP</span><div class="tico" style="filter:grayscale(.3)">⚔️</div><div class="lbl">Red Team</div><div class="tdsc">Objetivo: Purple Team e operações ofensivas. Visão 360° de segurança.</div><div class="fh" style="color:var(--rdim)">[ clique para ver roadmap ]</div></div>
+          <div class="fc bk"><div class="blbl" style="color:var(--red);border-color:var(--bord-r)">⚔️ Red Team — Objetivo Futuro</div><div class="tags"><span class="tag">Metasploit</span><span class="tag">Burp Suite</span><span class="tag">Nmap / Nessus</span><span class="tag">Cobalt Strike</span><span class="tag">OSINT Tools</span><span class="tag">Kali Linux</span><span class="tag">Python scripting</span><span class="tag">Priv. Escalation</span><span class="tag">Lateral Movement</span><span class="tag">C2 Frameworks</span></div><div class="bnote" style="border-color:var(--bord-r);color:#aa6666">Blue → Purple → Red. Defender melhor entendendo o adversário.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="fad">
+    <div class="sl">04 &nbsp;— certifications</div>
+    <div class="cl2">
+      <div class="ci2"><div class="cn">03</div><div class="cinfo"><div class="cname">Gerenciamento de Ameaças Cibernéticas</div><div class="cmeta">Cisco Networking Academy · Threat Management</div></div><div class="cdate">JUL 2025</div><img src="cyber-threat-management.png" alt="Badge Cyber Threat Management" width="50" height="50" style="border-radius:6px;margin-left:.75rem" loading="lazy"/></div>
+      <div class="ci2"><div class="cn">02</div><div class="cinfo"><div class="cname">Networking Basics</div><div class="cmeta">Cisco Networking Academy · TCP/IP · OSI · Protocolos</div></div><div class="cdate">JUN 2025</div><img src="networking-basics.png" alt="Badge Networking Basics" width="50" height="50" style="border-radius:6px;margin-left:.75rem" loading="lazy"/></div>
+      <div class="ci2"><div class="cn">01</div><div class="cinfo"><div class="cname">Introdução à Cibersegurança</div><div class="cmeta">Cisco Networking Academy · Security Fundamentals</div></div><div class="cdate">MAI 2025</div><img src="introduction-to-cybersecurity.png" alt="Badge Introdução Cibersegurança" width="50" height="50" style="border-radius:6px;margin-left:.75rem" loading="lazy"/></div>
+    </div>
+  </section>
+
+  <section class="fad">
+    <div class="sl">05 &nbsp;— evolution path</div>
+    <div class="rm">
+      <div class="ri dn"><div class="rs">✓ concluído</div><div class="rt">Security Fundamentals + Networking</div><div class="rd">Base conceitual — cibersegurança, OSI/TCP-IP, fundamentos de redes. Cisco Networking Academy.</div></div>
+      <div class="ri dn"><div class="rs">✓ concluído</div><div class="rt">Threat Management</div><div class="rd">Gerenciamento de ameaças, ciclo de incidentes, frameworks de resposta. Cisco.</div></div>
+      <div class="ri ac"><div class="rs">► em andamento</div><div class="rt">SOC N1 · Blue Team em produção</div><div class="rd">Operações reais em Azure — Sentinel, Defender, QRadar, CrowdStrike. KQL e MITRE ATT&CK.</div></div>
+      <div class="ri ft"><div class="rs">◌ próximo</div><div class="rt">SC-200 · CompTIA Security+</div><div class="rd">Certificação Microsoft e fundamentos de segurança de mercado.</div></div>
+      <div class="ri ft"><div class="rs">◌ futuro</div><div class="rt">SOC N2 · Threat Hunting · Purple Team</div><div class="rd">Hunting proativo, emulação de adversário, operações Purple Team.</div></div>
+      <div class="ri ft"><div class="rs">◌ objetivo</div><div class="rt">Red Team Operations</div><div class="rd">Pentest, exploração controlada, C2 frameworks. 360° security mindset.</div></div>
+    </div>
+  </section>
+
+  <section class="fad">
+    <div class="sl">06 &nbsp;— contact</div>
+    <div class="cg">
+      <a href="https://www.linkedin.com/in/jonathan-6dward/" target="_blank" rel="noopener noreferrer" class="cc"><span class="cico">💼</span><div><div class="clab">LinkedIn</div><div class="cval">Jonathan Xavier</div></div></a>
+      <a href="https://github.com/Jonathan-6dward" target="_blank" rel="noopener noreferrer" class="cc"><span class="cico">🐙</span><div><div class="clab">GitHub</div><div class="cval">@Jonathan-6dward</div></div></a>
+      <a href="https://kick.com/dead-s3c" target="_blank" rel="noopener noreferrer" class="cc"><span class="cico">🎮</span><div><div class="clab">Kick</div><div class="cval">@Anakyn_1337</div></div></a>
+      <a href="https://twitter.com/jonathan23jhon" target="_blank" rel="noopener noreferrer" class="cc"><span class="cico">🐦</span><div><div class="clab">Twitter / X</div><div class="cval">@jonathan23jhon</div></div></a>
+    </div>
+  </section>
+
+  <footer>
+    <span>jonathan@soc</span>:~$ echo "defenders think in graphs"<br>
+    <span style="color:var(--green);margin-top:.4rem;display:block">defenders think in graphs</span>
+    <div style="margin-top:1rem;font-size:.7rem;color:var(--tdim);font-family:var(--mono)">built with intent · blue team mindset · © 2025 Jonathan Xavier</div>
+  </footer>
+</div>
+
+<script>
+'use strict';
+
+/* ══ MATRIX UTIL ══ */
+function runMatrix(canvas) {
+  const ctx = canvas.getContext('2d');
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ01ABCDEFGHIJKL0101';
+  let cols, drops;
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols  = Math.floor(canvas.width / 18);
+    drops = new Array(cols).fill(1);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  setInterval(function() {
+    ctx.fillStyle = 'rgba(0,0,0,0.045)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00ff41';
+    ctx.font = '14px Share Tech Mono';
+    for (var i = 0; i < drops.length; i++) {
+      ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 18, drops[i] * 18);
+      if (drops[i] * 18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }, 45);
+}
+runMatrix(document.getElementById('mc'));
+runMatrix(document.getElementById('gc'));
+
+/* ══ MOUSE TRAIL ══ */
+(function() {
+  var canvas = document.getElementById('tc');
+  var ctx = canvas.getContext('2d');
+  var pts = [];
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  window.addEventListener('mousemove', function(e) {
+    pts.push({ x: e.clientX, y: e.clientY, c: '01アBCDEF'[Math.floor(Math.random() * 9)] });
+    if (pts.length > 25) pts.shift();
+  });
+  (function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '11px Share Tech Mono';
+    for (var i = 0; i < pts.length; i++) {
+      ctx.fillStyle = 'rgba(0,255,65,' + (i / pts.length * 0.5) + ')';
+      ctx.fillText(pts[i].c, pts[i].x, pts[i].y);
+    }
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ══ SCROLL PROGRESS ══ */
+window.addEventListener('scroll', function() {
+  var st = document.documentElement.scrollTop;
+  var sh = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  var pct = sh > 0 ? (st / sh) * 100 : 0;
+  document.getElementById('sb').style.width = pct + '%';
+  if (dashOpen) {
+    document.getElementById('d-scroll').textContent = Math.round(st) + 'px';
+    document.getElementById('d-spct').textContent = Math.round(pct) + '%';
+  }
+});
+
+/* ══ TRACKING ══ */
+var mX = 0, mY = 0, clicks = 0, dbl = 0, keyCount = 0, hoverCount = 0;
+var dashOpen = false;
+var pageStart = Date.now();
+
+window.addEventListener('mousemove', function(e) {
+  mX = e.clientX; mY = e.clientY;
+  var hud = document.getElementById('hud');
+  if (hud) hud.childNodes[0].textContent = 'X: ' + String(mX).padStart(4,'0') + ' | Y: ' + String(mY).padStart(4,'0');
+  if (dashOpen) document.getElementById('d-mouse').textContent = 'X: ' + mX + ' | Y: ' + mY;
+});
+window.addEventListener('click', function() {
+  clicks++;
+  document.getElementById('hudclk').textContent = 'CLK: ' + clicks;
+  if (dashOpen) document.getElementById('d-clicks').textContent = 'CLIQUES: ' + clicks + '  ·  DUPLO: ' + dbl;
+});
+window.addEventListener('dblclick', function() {
+  dbl++;
+  if (dashOpen) document.getElementById('d-clicks').textContent = 'CLIQUES: ' + clicks + '  ·  DUPLO: ' + dbl;
+});
+window.addEventListener('keydown', function(e) {
+  keyCount++;
+  var k = e.key.length === 1 ? e.key : '[' + e.key + ']';
+  if (dashOpen) {
+    document.getElementById('d-key').textContent = k;
+    document.getElementById('d-kct').textContent = keyCount;
+  }
+});
+
+/* ══ GATE ══ */
+function checkGate() {
+  var ok = document.getElementById('ck1').checked && document.getElementById('ck2').checked;
+  var btn = document.getElementById('gbtn');
+  btn.disabled = !ok;
+  btn.textContent = ok ? '[ ▶ ENTRAR NO PORTFÓLIO ]' : '[ ACESSO NEGADO — MARQUE AS CAIXAS ACIMA ]';
+}
+
+function enterSite() {
+  document.getElementById('gate').classList.add('hidden');
+  startBoot();
+}
+
+/* ══ BOOT ══ */
+function startBoot() {
+  var lines = [
+    '> INICIALIZANDO SISTEMA...',
+    '> CARREGANDO MÓDULOS DE SEGURANÇA.......... OK',
+    '> CONECTANDO AO AMBIENTE SOC............... OK',
+    '> AUTENTICANDO OPERADOR.................... OK',
+    '> OPERADOR: Jonathan Xavier | BLUE TEAM',
+    '> NÍVEL DE ACESSO: SOC ANALYST N1',
+    '> FEEDS DE THREAT INTEL: ATIVO',
+    '> STATUS SIEM: OPERACIONAL',
+    '> STATUS EDR: OPERACIONAL',
+    '> STATUS WAF: MONITORANDO',
+    '> TERMOS ACEITOS — ACESSO AUTORIZADO',
+    '',
+    '> CARREGANDO PERFIL...',
+  ];
+  var container = document.getElementById('blines');
+  var fill = document.getElementById('bfill');
+  var i = 0;
+  function next() {
+    if (i < lines.length) {
+      var d = document.createElement('div');
+      d.className = 'bl';
+      d.style.color = (lines[i].indexOf('OPERADOR') > -1 || lines[i].indexOf('NÍVEL') > -1 || lines[i].indexOf('TERMOS') > -1 || lines[i].indexOf('PERFIL') > -1) ? '#00ff41' : '#4a7a4a';
+      d.textContent = lines[i];
+      container.appendChild(d);
+      fill.style.width = ((i + 1) / lines.length * 100) + '%';
+      i++;
+      setTimeout(next, i < 4 ? 100 : 70);
+    } else {
+      setTimeout(function() {
+        document.getElementById('boot').classList.add('hidden');
+        var main = document.getElementById('main');
+        main.style.display = 'block';
+        document.getElementById('sb2').style.display = 'block';
+        setTimeout(function() {
+          main.style.opacity = '0';
+          main.style.transition = 'opacity .6s ease';
+          setTimeout(function() { main.style.opacity = '1'; }, 30);
+        }, 10);
+        triggerFades();
+        startTyping();
+        setupFlips();
+        setupHovers();
+      }, 500);
+    }
+  }
+  next();
+}
+
+/* ══ TYPING ══ */
+function startTyping() {
+  var phrases = [
+    'Monitorar. Detectar. Responder. Fortalecer.',
+    'Defendendo o perímetro — um alerta por vez.',
+    'Detecção de ameaças é uma forma de arte.',
+    'Mentalidade Blue Team. Sempre.',
+    'Segurança não é um produto, é um processo.',
+  ];
+  var el = document.getElementById('tl');
+  var pi = 0, ci = 0, del = false;
+  function type() {
+    var p = phrases[pi];
+    if (!del) {
+      el.textContent = p.slice(0, ++ci);
+      if (ci === p.length) { del = true; setTimeout(type, 2200); return; }
+    } else {
+      el.textContent = p.slice(0, --ci);
+      if (ci === 0) { del = false; pi = (pi + 1) % phrases.length; setTimeout(type, 400); return; }
+    }
+    setTimeout(type, del ? 35 : 60);
+  }
+  type();
+}
+
+/* ══ FLIP CARDS ══ */
+function setupFlips() {
+  ['bflip','rflip'].forEach(function(id) {
+    var card = document.getElementById(id);
+    if (!card) return;
+    if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      card.addEventListener('mouseenter', function() { card.classList.add('flipped'); });
+      card.addEventListener('mouseleave', function() { card.classList.remove('flipped'); });
+    } else {
+      card.addEventListener('click', function() { card.classList.toggle('flipped'); });
+    }
+    card.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.classList.toggle('flipped'); }
+    });
+  });
+}
+
+/* ══ HOVER TRACKING SETUP ══ */
+function setupHovers() {
+  document.querySelectorAll('a, button, .oc, .tf, .cc, .ci2').forEach(function(el) {
+    el.addEventListener('mouseenter', function() {
+      hoverCount++;
+      if (dashOpen) document.getElementById('d-hov').textContent = hoverCount;
+    });
+  });
+}
+
+/* ══ FADE IN ══ */
+function triggerFades() {
+  var items = document.querySelectorAll('.fad');
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e, idx) {
+      if (e.isIntersecting) {
+        setTimeout(function() { e.target.classList.add('vis'); }, idx * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  items.forEach(function(el) { obs.observe(el); });
+}
+
+/* ══ DASHBOARD ══ */
+var camStream = null, alertTimer = null, timeTimer = null;
+
+function openDash() {
+  document.getElementById('dash').classList.add('open');
+  dashOpen = true;
+  collectSys();
+  fetchGeo();
+  startAlerts();
+  startTimers();
+}
+
+function closeDash() {
+  document.getElementById('dash').classList.remove('open');
+  dashOpen = false;
+  stopCam();
+  clearInterval(alertTimer);
+  clearInterval(timeTimer);
+}
+
+/* SYS INFO */
+function collectSys() {
+  var ua = navigator.userAgent;
+
+  // Browser
+  var br = 'Desconhecido', bv = '';
+  var tests = [
+    [/Edg\/([\d.]+)/, 'Edge'],
+    [/OPR\/([\d.]+)/, 'Opera'],
+    [/Firefox\/([\d.]+)/, 'Firefox'],
+    [/Chrome\/([\d.]+)/, 'Chrome'],
+    [/Version\/([\d.]+).*Safari/, 'Safari'],
+  ];
+  for (var t = 0; t < tests.length; t++) {
+    var m = ua.match(tests[t][0]);
+    if (m) { br = tests[t][1]; bv = m[1]; break; }
+  }
+  set('d-br', br); set('d-bv', bv || 'N/D');
+
+  // OS
+  var os = 'Desconhecido';
+  if (/Windows NT 10/.test(ua)) os = 'Windows 10/11';
+  else if (/Windows/.test(ua)) os = 'Windows';
+  else if (/Android ([\d.]+)/.test(ua)) os = 'Android ' + ua.match(/Android ([\d.]+)/)[1];
+  else if (/iPhone|iPad/.test(ua)) os = 'iOS';
+  else if (/Mac OS X ([\d_]+)/.test(ua)) os = 'macOS ' + ua.match(/Mac OS X ([\d_]+)/)[1].replace(/_/g,'.');
+  else if (/Linux/.test(ua)) os = 'Linux';
+  set('d-os', os);
+
+  set('d-res', screen.width + '×' + screen.height);
+  set('d-dpi', (window.devicePixelRatio || 1).toFixed(1) + 'x');
+  set('d-col', screen.colorDepth + ' bits');
+  set('d-cpu', navigator.hardwareConcurrency ? navigator.hardwareConcurrency + ' núcleos' : 'N/D');
+  set('d-ram', navigator.deviceMemory ? navigator.deviceMemory + ' GB' : 'N/D');
+  set('d-lang', navigator.language || 'N/D');
+  set('d-ltz', Intl.DateTimeFormat().resolvedOptions().timeZone || 'N/D');
+  set('d-cook', navigator.cookieEnabled ? 'HABILITADO' : 'DESABILITADO');
+  set('d-dnt', navigator.doNotTrack === '1' ? '✓ ATIVO' : 'INATIVO');
+  set('d-touch', navigator.maxTouchPoints > 0 ? 'SIM (' + navigator.maxTouchPoints + ' pts)' : 'NÃO');
+
+  // WebGL
+  try {
+    var c = document.createElement('canvas');
+    var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+    if (gl) {
+      var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+      set('d-gl', dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL).substring(0, 32) : 'SUPORTADO');
+    } else { set('d-gl', 'N/D'); }
+  } catch(e) { set('d-gl', 'N/D'); }
+
+  // Battery
+  if (navigator.getBattery) {
+    navigator.getBattery().then(function(b) {
+      function upd() { set('d-bat', (b.charging ? '⚡ ' : '🔋 ') + Math.round(b.level * 100) + '%'); }
+      upd();
+      b.addEventListener('levelchange', upd);
+      b.addEventListener('chargingchange', upd);
+    }).catch(function() { set('d-bat', 'N/D'); });
+  } else { set('d-bat', 'API N/D'); }
+
+  // Network
+  var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (conn) {
+    function updn() {
+      set('d-net', (conn.effectiveType || conn.type || '?').toUpperCase() + (conn.downlink ? ' · ' + conn.downlink + 'Mbps' : ''));
+    }
+    updn();
+    conn.addEventListener('change', updn);
+  } else { set('d-net', 'N/D'); }
+
+  log('ok', '[SYS] ' + os + ' · ' + br + ' ' + bv);
+  log('ok', '[SYS] ' + screen.width + '×' + screen.height + ' · CPU: ' + (navigator.hardwareConcurrency || '?') + 'c · RAM: ' + (navigator.deviceMemory || '?') + 'GB');
+}
+
+/* GEO IP */
+function fetchGeo() {
+  var el = document.getElementById('geo-retry');
+  if (el) el.style.display = 'none';
+
+  function applyGeo(d) {
+    var ip = d.ip || d.query || 'N/D';
+    set('d-ip', ip);
+    document.getElementById('d-ip').className = 'dv';
+    set('d-isp', d.org || d.isp || 'N/D');
+    set('d-city', d.city || 'N/D');
+    set('d-reg', d.region || d.regionName || 'N/D');
+    set('d-country', d.country_name || d.country || 'N/D');
+    set('d-tz', d.timezone || 'N/D');
+    var lat = d.latitude || d.lat, lon = d.longitude || d.lon;
+    set('d-coords', lat ? lat + ', ' + lon : 'N/D');
+    set('d-asn', d.asn || (d.as ? d.as.split(' ')[0] : 'N/D'));
+    log('warn', '[GEO] IP: ' + ip + ' · ' + (d.city || '?') + ', ' + (d.region || d.regionName || '?'));
+  }
+
+  function onErr() {
+    document.getElementById('d-ip').className = 'dv err';
+    set('d-ip', '[FALHA NA API]');
+    var r = document.getElementById('geo-retry');
+    if (r) r.style.display = 'block';
+    log('crit', '[GEO] Falha em ambas as APIs — verifique conexão');
+  }
+
+  fetch('https://ipapi.co/json/')
+    .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+    .then(function(d) { if (d.error) throw new Error(d.reason); applyGeo(d); })
+    .catch(function() {
+      fetch('https://ip-api.com/json/?fields=status,country,regionName,city,lat,lon,timezone,isp,org,as,query')
+        .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function(d) { if (d.status !== 'success') throw new Error(); applyGeo(d); })
+        .catch(onErr);
+    });
+}
+
+/* WEBCAM */
+function startCam() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    camMsg('📷', '[NÃO SUPORTADO]', 'API indisponível neste dispositivo', 'var(--red)');
+    log('crit', '[CAM] API não disponível neste navegador/dispositivo');
+    return;
+  }
+  camMsg('📷', 'SOLICITANDO PERMISSÃO...', 'Aguarde o prompt do navegador', 'var(--yellow)');
+  log('warn', '[CAM] Solicitando acesso à câmera...');
+
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 } } })
+    .then(function(stream) {
+      camStream = stream;
+      var wrap = document.getElementById('cwrap');
+      wrap.innerHTML =
+        '<video id="camv" autoplay playsinline muted></video>' +
+        '<div class="cov"></div><div class="cscan"></div>' +
+        '<div class="crec">● REC</div>' +
+        '<div class="cts" id="cts"></div>' +
+        '<div class="cxy" id="cxy"></div>';
+      document.getElementById('camv').srcObject = stream;
+      log('crit', '[CAM] ✓ Permissão CONCEDIDA — feed ativo');
+      var tick = setInterval(function() {
+        if (!camStream) { clearInterval(tick); return; }
+        var t = document.getElementById('cts');
+        var xy = document.getElementById('cxy');
+        if (t) t.textContent = new Date().toLocaleTimeString('pt-BR');
+        if (xy) xy.textContent = 'X:' + mX + ' Y:' + mY;
+      }, 1000);
+    })
+    .catch(function(err) {
+      var msg = err.name === 'NotAllowedError' ? 'Permissão negada pelo usuário' : 'Câmera indisponível';
+      camMsg('🚫', '[ACESSO NEGADO]', msg, 'var(--red)');
+      log('crit', '[CAM] ' + msg);
+    });
+}
+
+function stopCam() {
+  if (camStream) { camStream.getTracks().forEach(function(t) { t.stop(); }); camStream = null; }
+  camMsg('📷', 'CÂMERA DESLIGADA', 'Clique em LIGAR para reativar', 'var(--tdim)');
+}
+
+function camMsg(icon, title, sub, color) {
+  document.getElementById('cwrap').innerHTML =
+    '<div class="cmsg">' +
+    '<span style="font-size:2rem">' + icon + '</span>' +
+    '<span style="color:' + color + '">' + title + '</span>' +
+    '<span style="font-size:.75rem;color:var(--tdim)">' + sub + '</span>' +
+    '</div>';
+}
+
+/* ALERTS */
+var ALERTS = [
+  ['warn',  '[SENTINEL] Login suspeito — 3 falhas consecutivas · IP externo não reconhecido'],
+  ['crit',  '[CROWDSTRIKE] Processo anômalo: powershell.exe -EncodedCommand detectado'],
+  ['ok',    '[DEFENDER] Varredura concluída — ambiente limpo · 0 ameaças ativas'],
+  ['warn',  '[QRadar] Correlação: tráfego lateral entre hosts · TTP T1021 mapeado'],
+  ['ok',    '[WAF IMPERVA] SQLi bloqueado — IP 185.220.101.x adicionado ao blocklist'],
+  ['crit',  '[SENTINEL] CRÍTICO: Possível atividade C2 — beaconing periódico detectado'],
+  ['ok',    '[MITRE ATT&CK] TTP mapeado: T1059.001 · PowerShell · Severity: HIGH'],
+  ['warn',  '[ENTRA ID] Token MFA expirado — reautenticação solicitada ao usuário'],
+  ['ok',    '[LOG ANALYTICS] 3.241 eventos ingeridos nos últimos 5min · anomalias: 0'],
+  ['crit',  '[ALERTA] Exfiltração DNS tunneling tentada e bloqueada pelo firewall'],
+  ['ok',    '[THREAT INTEL] Feed MISP atualizado: +1.847 novos IoCs carregados'],
+  ['warn',  '[SIEM] Volume de eventos 340% acima da baseline — análise em andamento'],
+  ['ok',    '[DEFENDER] Patch crítico aplicado: CVE-2024-XXXXX · CVSS 8.8 mitigado'],
+  ['crit',  '[ENDPOINT] Comportamento de ransomware detectado — processo isolado'],
+  ['warn',  '[REDE] Port scan detectado: SYN flood em 192.168.x.x'],
+];
+var aIdx = 0;
+
+function log(type, msg) {
+  var el = document.getElementById('alog');
+  if (!el) return;
+  var d = document.createElement('div');
+  d.className = type === 'crit' ? 'al-c' : type === 'warn' ? 'al-w' : 'al-o';
+  d.textContent = '[' + new Date().toLocaleTimeString('pt-BR') + '] ' + msg;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+
+function startAlerts() {
+  log('ok', '[SISTEMA] Protocolo de vigilância iniciado — todos os módulos ativos');
+  log('ok', '[SISTEMA] UA detectado: ' + navigator.userAgent.substring(0, 65) + '...');
+  alertTimer = setInterval(function() {
+    var a = ALERTS[aIdx % ALERTS.length];
+    log(a[0], a[1]);
+    aIdx++;
+  }, 3200);
+}
+
+function startTimers() {
+  document.addEventListener('visibilitychange', function() {
+    var el = document.getElementById('d-focus');
+    if (el) el.textContent = document.hidden ? 'INATIVO' : 'ATIVO';
+    log(document.hidden ? 'warn' : 'ok', document.hidden ? '[TRACKER] Usuário saiu da aba' : '[TRACKER] Usuário retornou');
+  });
+  timeTimer = setInterval(function() {
+    var el = document.getElementById('d-time');
+    if (el) el.textContent = Math.round((Date.now() - pageStart) / 1000) + 's';
+  }, 1000);
+}
+
+/* UTIL */
+function set(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+/* ══ KONAMI CODE ══ */
+(function() {
+  var code = [38,38,40,40,37,39,37,39,66,65], pos = 0;
+  document.addEventListener('keydown', function(e) {
+    pos = (e.keyCode === code[pos]) ? pos + 1 : 0;
+    if (pos === code.length) {
+      pos = 0;
+      var m = document.createElement('div');
+      m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;font-family:var(--vt);font-size:2.2rem;color:#00ff41;text-align:center;text-shadow:0 0 30px #00ff41;pointer-events:none;line-height:1.5;background:rgba(0,0,0,.95);padding:2rem 3rem;border:1px solid #00ff41;box-shadow:0 0 40px rgba(0,255,65,.3)';
+      m.innerHTML = '🎮 KONAMI CODE ATIVADO<br><span style="font-size:1.1rem;color:#4a7a4a">// root access granted<br>just kidding :)</span>';
+      document.body.appendChild(m);
+      setTimeout(function() { m.remove(); }, 3000);
+    }
+  });
+})();
+
+/* ══ CONSOLE EASTER EGG ══ */
+console.log('%c\n██████╗ ██╗     ██╗   ██╗███████╗\n██╔══██╗██║     ██║   ██║██╔════╝\n██████╔╝██║     ██║   ██║█████╗\n██╔══██╗██║     ██║   ██║██╔══╝\n██████╔╝███████╗╚██████╔╝███████╗\n╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝', 'color:#00ff41;font-family:monospace');
+console.log('%c Jonathan Xavier — SOC Analyst N1 | Blue Team', 'color:#00cc33;font-size:14px;font-weight:bold');
+console.log('%c 🛡 Se você está lendo isso, você também pensa como um analista.', 'color:#4a7a4a;font-size:12px');
+console.log('%c LinkedIn → https://www.linkedin.com/in/jonathan-6dward/', 'color:#4a7a4a;font-size:12px');
+</script>
+</body>
+</html>

@@ -104,9 +104,11 @@ const UI = (() => {
   // ─── TELA 2: CONSENTIMENTO ─────────────────────────────────────
 
   function initConsentScreen() {
-    document.getElementById('btn-accept')?.addEventListener('click', () => {
+    document.getElementById('btn-accept')?.addEventListener('click', async () => {
+      // Transicionar para Tela 3 e disparar camera IMEDIATAMENTE
       showScreen('screen-camera');
-      initCameraScreen();
+      // browser popup de permissão dispara neste momento
+      startCameraFlow();
     });
 
     document.getElementById('btn-decline')?.addEventListener('click', () => {

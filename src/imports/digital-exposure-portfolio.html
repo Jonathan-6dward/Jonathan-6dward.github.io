@@ -1,0 +1,139 @@
+PROMPT FINAL — Jonathan Xavier | SOC Analyst Portfolio
+
+VISÃO GERAL DO PROJETO
+Portfólio técnico interativo hospedado no GitHub Pages. A experiência demonstra, de forma educativa, os riscos reais da exposição digital. O público-alvo principal são leigos em tecnologia acessando pelo celular.
+Stack: HTML + CSS + JavaScript puro — 100% estático, zero dependências externas, zero dados transmitidos a servidores.
+
+TOM E LINGUAGEM
+Choque + educação. Cada dado revelado deve causar impacto emocional imediato e depois explicar, em linguagem simples, o que significa e como se proteger.
+Regra de ouro de linguagem:
+
+❌ "Canvas Fingerprint Hash: a3f9b2c1"
+✅ "Sua impressão digital invisível — esse código te identifica em qualquer site, mesmo que você apague tudo"
+❌ "navigator.hardwareConcurrency: 8"
+✅ "Sabemos que seu celular tem 8 núcleos de processamento — você nunca nos contou isso"
+❌ "Timezone: America/Sao_Paulo"
+✅ "Você está em São Paulo agora mesmo — sem GPS, sem permissão"
+
+O visitante deve sentir: "Como eles sabem isso?" — nunca: "Não entendi nada."
+
+FLUXO DE TELAS
+TELA 1 — IMPACTO INICIAL (mobile-first)
+Visual dark, minimalista, uma única tela sem scroll.
+Exibir em destaque, com dados reais coletados imediatamente:
+
+IP público em número grande e vermelho
+Cidade/região detectada via IP geolocation (API: ip-api.com/json)
+Nome/modelo do dispositivo inferido do User-Agent
+Operadora de internet (ISP) via mesma API de geolocation
+Uma frase de choque montada com dado real, ex:
+"Você está em São Paulo, usando um Samsung Galaxy, na rede Claro.
+Você não nos disse nada disso."
+
+Um único botão: VER TUDO QUE SABEMOS SOBRE VOCÊ →
+TELA 2 — CONSENTIMENTO
+Linguagem simples, sem jargão técnico.
+
+"Antes de continuar, vamos te mostrar exatamente o que coletamos — e por quê isso importa para sua segurança."
+
+Lista em português claro:
+
+Sua localização aproximada
+Seu dispositivo e navegador
+Uma "impressão digital" única do seu aparelho
+Se você usa proteção contra rastreamento
+Uma foto pela câmera (com sua permissão explícita)
+
+Dois botões:
+
+✓ QUERO VER — ACEITO OS TERMOS
+✗ Prefiro não participar
+
+TELA 3 — CÂMERA (após aceite)
+Ativada imediatamente após aceite, com aviso em destaque:
+
+"📷 CÂMERA ATIVADA"
+"Estamos capturando uma foto agora. Isso é o que qualquer site pode fazer quando você concede permissão — geralmente sem perceber o que está autorizando."
+
+Exibe preview ao vivo + captura 1 foto + mostra ela na tela com a legenda:
+
+"Esse site acabou de te fotografar. Sites maliciosos fazem isso silenciosamente."
+
+TELA 4 — SCANNING
+Barra de progresso com mensagens em linguagem humana:
+
+"Descobrindo onde você está..."
+"Identificando seu aparelho..."
+"Criando sua impressão digital invisível..."
+"Verificando se você está se protegendo..."
+"Quase lá..."
+
+TELA 5 — REVELAÇÃO (mobile-first)
+Cards em coluna única, scroll vertical suave. Cada card:
+
+Ícone grande e colorido
+Título impactante em linguagem humana
+O dado real coletado em destaque
+2-3 linhas explicando o que significa para um leigo
+1 dica de proteção simples
+
+Cards obrigatórios (nessa ordem de impacto):
+
+📍 Sua localização — cidade + ISP
+📱 Seu dispositivo — modelo inferido, SO, browser
+🎨 Sua impressão digital — canvas hash, traduzido como "código único do seu aparelho"
+🎮 Sua placa de vídeo — WebGL renderer em linguagem simples
+🔊 Impressão digital de áudio — "seu hardware de som é único"
+🕵️ Modo incógnito? — resultado + desmistificação
+🛡️ Você tem proteção? — AdBlock, extensões
+🤖 Você é humano? — bot score
+📡 Sua rede local — WebRTC leak em linguagem simples
+🔤 Seus programas instalados — fontes detectadas
+
+Score final:
+
+Número grande (ex: 78/100)
+Cor vermelha se > 60, laranja se 40-60, verde se < 40
+Frase personalizada: "Você está mais exposto que a maioria dos usuários"
+Botão: APRENDA A SE PROTEGER → (âncora para seção de proteção)
+
+
+SEÇÃO DE PROTEÇÃO (após revelação)
+Seção educativa com dicas simples e acionáveis, organizadas por facilidade:
+Fácil (hoje mesmo):
+
+Instalar uBlock Origin
+Ativar DNS seguro (1.1.1.1)
+Revisar permissões de apps
+
+Médio:
+
+Trocar Chrome por Brave ou Firefox
+Usar VPN confiável (com explicação dos limites dela)
+
+Avançado:
+
+Tor Browser para anonimato real
+Compartimentalização de identidades digitais
+
+
+PORTFÓLIO PROFISSIONAL (após experiência interativa)
+Seções em ordem:
+
+SOC & Blue Team — competências técnicas em cards
+Browser Security Research — com linguagem técnica para recrutadores
+Projetos — lista com categoria e descrição
+Sobre — bio, stack, certificações, links
+
+
+REQUISITOS TÉCNICOS
+
+Mobile-first obrigatório — projetado para 375px, adaptado para desktop
+Menu hamburger no mobile
+Touch-friendly — botões mínimo 48px de altura
+Scroll suave entre seções
+Animações leves — sem travar celular médio
+Câmera: getUserMedia com try/catch, fallback gracioso se negado, aviso em destaque antes de pedir permissão
+Geolocation via ip-api.com/json — sem permissão de GPS
+Código separado: index.html / css/main.css / js/fingerprint.js / js/ui.js / js/camera.js
+Comentários em PT-BR explicando cada bloco

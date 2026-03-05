@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jonathan Xavier — SOC Analyst · Blue Team</title>
+  <meta name="description" content="Portfólio técnico de Jonathan Xavier — SOC Analyst N1, Blue Team, Microsoft Azure Security, Browser Fingerprinting Research.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Jonathan Xavier — SOC Analyst · Blue Team">
+  <meta property="og:description" content="Demonstração técnica de segurança digital e browser fingerprinting.">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<!-- ============================================================
+     SCREEN 1 — IMPACT
+     ============================================================ -->
+<div id="screen-impact" class="screen">
+  <div class="impact-scanline"></div>
+  <div class="impact-corner tl"></div>
+  <div class="impact-corner tr"></div>
+  <div class="impact-corner bl"></div>
+  <div class="impact-corner br"></div>
+
+  <div class="impact-label">SISTEMA ATIVO · MONITORAMENTO EM TEMPO REAL</div>
+
+  <h1 class="impact-headline">
+    Você realmente sabe<br>
+    o que a internet sabe<br>
+    <em>sobre você?</em>
+  </h1>
+
+  <p class="impact-sub">
+    Seu navegador está transmitindo mais informações do que você imagina —
+    sem pedir permissão, sem instalar nada, agora mesmo.
+  </p>
+
+  <div class="impact-ip-display">
+    <span class="impact-ip-label">SEU IP PÚBLICO DETECTADO</span>
+    <span id="impact-ip">Resolvendo...</span>
+  </div>
+
+  <button class="btn-impact" id="btn-enter">
+    ▸ &nbsp;ENTRAR NA REALIDADE DIGITAL
+  </button>
+</div>
+
+<!-- ============================================================
+     SCREEN 2 — CONSENT
+     ============================================================ -->
+<div id="screen-consent" class="screen hidden">
+  <div class="consent-box">
+    <span class="consent-tag">⚠ AVISO DE PRIVACIDADE — LEIA ANTES DE CONTINUAR</span>
+    <h2 class="consent-title">Coleta de Dados para Fins Educativos</h2>
+
+    <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.8">
+      Este portfólio coleta e exibe dados do seu navegador para demonstrar,
+      de forma educativa, as técnicas de identificação digital usadas por
+      plataformas de advertising, sistemas antifraude e ferramentas de segurança.
+    </p>
+
+    <ul class="consent-list">
+      <li>Canvas, Audio e WebGL fingerprints serão gerados e exibidos</li>
+      <li>User-Agent, SO, resolução, GPU e timezone serão coletados</li>
+      <li>Detecção de AdBlock, modo incógnito e automação será executada</li>
+      <li>Fontes do sistema serão enumeradas via técnica de medição CSS</li>
+      <li>WebRTC poderá revelar IPs da sua rede local</li>
+      <li>Detecção de dispositivos de mídia (câmera/microfone) sem permissão</li>
+      <li>Busca de presença em redes sociais via técnicas de timing</li>
+      <li><strong style="color:#fff">Nenhum dado é transmitido a servidores externos</strong></li>
+      <li>Todo processamento ocorre localmente no seu navegador</li>
+    </ul>
+
+    <div class="consent-warning">
+      <strong>Finalidade exclusivamente educativa.</strong> Os dados exibidos
+      ilustram o que <em>qualquer site</em> na internet pode coletar sobre você
+      hoje. O objetivo é gerar consciência sobre privacidade digital e demonstrar
+      técnicas que analistas de segurança precisam conhecer para proteger usuários.
+    </div>
+
+    <div class="consent-extra" style="margin-top:1.2rem;padding:1rem;background:rgba(0,212,255,0.05);border:1px solid var(--cyan-dim);border-radius:4px">
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem">
+        <input type="checkbox" id="cam-permission-check" style="width:16px;height:16px;margin-top:2px;accent-color:var(--cyan)">
+        <label for="cam-permission-check" style="font-size:0.79rem;color:var(--text-dim);line-height:1.6;cursor:pointer">
+          <strong style="color:var(--cyan)">Permissão opcional de câmera/microfone:</strong> Após a análise, você poderá conceder acesso à sua câmera e microfone para demonstrar como um site pode usar esses dispositivos após permissão explícita. <em style="color:var(--text-muted)">Você pode negar a qualquer momento.</em>
+        </label>
+      </div>
+    </div>
+
+    <div class="consent-actions">
+      <button class="btn-accept" id="btn-accept">
+        ✓ &nbsp;ENTENDO E ACEITO
+      </button>
+      <button class="btn-decline" id="btn-decline">
+        ✗ &nbsp;CONTINUAR SEM ANÁLISE
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 3.5 — CAMERA PERMISSION
+     ============================================================ -->
+<div id="screen-camera-permission" class="screen hidden">
+  <div class="consent-box" style="max-width:520px">
+    <span class="consent-tag" style="color:var(--cyan)">📹 PERMISSÃO DE CÂMERA</span>
+    <h2 class="consent-title">Acesso à Câmera e Microfone</h2>
+
+    <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.8;margin-bottom:1rem">
+      Você concordou em permitir o acesso à câmera para fins demonstrativos.
+      Este acesso será usado para mostrar como um site pode exibir vídeo em tempo real
+      após obter permissão do usuário.
+    </p>
+
+    <div style="background:rgba(0,255,136,0.05);border:1px solid var(--green);padding:0.85rem;margin:1rem 0;font-size:0.77rem;color:var(--text-dim);line-height:1.7">
+      <strong style="color:var(--green)">✓ Seguro:</strong> O vídeo é processado localmente no seu navegador. Nenhum frame é enviado a servidores externos ou gravado em arquivo.
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1.5rem">
+      <button class="btn-accept" id="btn-cam-allow" style="flex:none;width:100%">
+        📷 &nbsp;PERMITIR CÂMERA
+      </button>
+      <button class="btn-decline" id="btn-cam-deny" style="flex:none;width:100%">
+        ✕ &nbsp;NEGAR
+      </button>
+    </div>
+
+    <p style="font-size:0.7rem;color:var(--text-muted);text-align:center;margin-top:1rem">
+      Você pode mudar esta decisão a qualquer momento nas configurações do navegador.
+    </p>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 3 — SCANNING
+     ============================================================ -->
+<div id="screen-scanning" class="screen hidden">
+  <div class="scan-title">▸ EXECUTANDO ANÁLISE DE AMBIENTE</div>
+
+  <div class="scan-percent" id="scan-percent">0%</div>
+
+  <div class="scan-progress-container">
+    <div class="scan-bar-track">
+      <div class="scan-bar-fill" id="scan-bar-fill"></div>
+    </div>
+  </div>
+
+  <div class="scan-log" id="scan-log"></div>
+</div>
+
+<!-- ============================================================
+     MAIN PORTFOLIO
+     ============================================================ -->
+<div id="main-portfolio">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="#hero" class="nav-logo">JX<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#fingerprint">Análise</a></li>
+      <li><a href="#soc">SOC</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#projects">Projetos</a></li>
+      <li><a href="#about">Sobre</a></li>
+    </ul>
+    <div class="nav-status">
+      <div class="nav-dot"></div>
+      SOC N1 · ONLINE
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HERO
+       ══════════════════════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-bg-radial"></div>
+
+    <div class="container">
+      <div class="hero-content">
+        <!-- Left -->
+        <div>
+          <div class="hero-label">SOC ANALYST N1 · BLUE TEAM</div>
+          <h1 class="hero-title">
+            Jonathan<br>
+            <span class="line2">Xavier</span>
+          </h1>
+          <p class="hero-desc">
+            Especialista em operações de segurança defensiva no ecossistema Microsoft Azure.
+            Triagem de alertas, resposta a incidentes, threat hunting e pesquisa em
+            browser fingerprinting aplicada à detecção de fraude e análise de ameaças.
+          </p>
+          <div class="hero-tags">
+            <span class="tag active">Microsoft Sentinel</span>
+            <span class="tag active">CrowdStrike</span>
+            <span class="tag active">MITRE ATT&CK</span>
+            <span class="tag active">KQL</span>
+            <span class="tag">Entra ID</span>
+            <span class="tag">Imperva WAF</span>
+            <span class="tag">Browser Security</span>
+          </div>
+          <div class="hero-btns">
+            <a href="#fingerprint" class="btn-primary">▸ Ver Análise</a>
+            <a href="#about" class="btn-secondary">Sobre mim →</a>
+          </div>
+        </div>
+
+        <!-- Right: Terminal -->
+        <div class="terminal-card fade-in">
+          <div class="terminal-bar">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+            <div class="terminal-title">soc-workstation ~ sentinel-cli</div>
+          </div>
+          <div class="terminal-body" id="terminal-lines" style="overflow:auto;max-height:320px">
+            <!-- Preenchido por JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       FINGERPRINT REVEAL
+       ══════════════════════════════════════════════════════════ -->
+  <section id="fingerprint">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label accent-red">
+          ⚠ EXPOSIÇÃO DE DADOS DO NAVEGADOR
+        </div>
+        <h2 class="section-title">
+          O que seu navegador<br>
+          <span class="accent-cyan">entregou sobre você</span>
+        </h2>
+        <p class="section-desc">
+          Cada card abaixo representa um sinal coletado do seu ambiente
+          nesta sessão — sem plugins, sem permissões especiais, sem instalação de software.
+          Isso é o que <em>qualquer site</em> pode saber sobre você.
+        </p>
+      </div>
+
+      <!-- Cards container (preenchido por JS após coleta) -->
+      <div class="fp-grid" id="fp-cards-container">
+        <div style="padding:3rem;color:var(--text-muted);font-size:0.85rem;grid-column:1/-1;text-align:center">
+          Aceite o consentimento na tela inicial para visualizar a análise completa do seu ambiente.
+        </div>
+      </div>
+
+      <!-- Score container -->
+      <div id="trackability-score"></div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SOC & BLUE TEAM
+       ══════════════════════════════════════════════════════════ -->
+  <section id="soc" class="section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label accent-cyan">BLUE TEAM OPERATIONS</div>
+        <h2 class="section-title">SOC & Incident Response</h2>
+        <p class="section-desc">
+          Operações de segurança defensiva com foco em detecção, triagem e resposta
+          a incidentes no ambiente Microsoft Azure / Sentinel.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🔍</div>
+          <div class="skill-name">Triagem de Alertas</div>
+          <div class="skill-desc">Classificação por severidade, diferenciação de verdadeiros/falsos positivos e escalonamento estruturado para N2.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Sentinel</span>
+            <span class="skill-tag">KQL</span>
+            <span class="skill-tag">SOAR</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">⚡</div>
+          <div class="skill-name">Incident Response</div>
+          <div class="skill-desc">Playbooks completos para ransomware, phishing, credential compromise e movimentação lateral em ambientes Azure.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">CrowdStrike EDR</span>
+            <span class="skill-tag">NIST IR</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🕵️</div>
+          <div class="skill-name">Threat Hunting</div>
+          <div class="skill-desc">Hunting proativo baseado em hipóteses, análise de TTPs e conversão de hunts em regras de detecção permanentes.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">MITRE ATT&CK</span>
+            <span class="skill-tag">Sigma</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🔗</div>
+          <div class="skill-name">Correlação Multi-fonte</div>
+          <div class="skill-desc">Correlação de eventos entre Sentinel, CrowdStrike, Imperva WAF e Entra ID para reconstrução de cadeias de ataque.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Log Analytics</span>
+            <span class="skill-tag">KQL</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🎯</div>
+          <div class="skill-name">MITRE ATT&CK Mapping</div>
+          <div class="skill-desc">Mapeamento de comportamentos observados para TTPs, análise Kill Chain e geração de regras de detecção Sigma.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">ATT&CK Navigator</span>
+            <span class="skill-tag">Sigma</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">📊</div>
+          <div class="skill-name">SIEM Tuning</div>
+          <div class="skill-desc">Redução de falsos positivos, whitelisting inteligente, threshold tuning e baselining comportamental sem criar pontos cegos.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Alert Fatigue</span>
+            <span class="skill-tag">Baselining</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- KQL Showcase -->
+      <div style="margin-top:4rem" class="fade-in">
+        <div class="section-label accent-cyan" style="margin-bottom:1.5rem">QUERY ARSENAL — KQL SENTINEL</div>
+        <div class="terminal-card">
+          <div class="terminal-bar">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+            <div class="terminal-title">Microsoft Sentinel — Log Analytics — KQL Query</div>
+          </div>
+          <div class="terminal-body" style="font-size:0.76rem;max-height:420px;overflow:auto">
+<div class="t-line"><span class="t-output t-comment">// ── IMPOSSIBLE TRAVEL DETECTION ──────────────────────────────────────</span></div>
+<div class="t-line"><span class="t-output t-comment">// Detecta autenticação em dois países em janela de tempo impossível</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#9d4edd">SigninLogs</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> TimeGenerated > ago(1h)</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> ResultType == <span style="color:#00ff88">"0"</span> <span style="color:var(--text-muted)">// Sucesso</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| extend</span> Country = tostring(LocationDetails.countryOrRegion)</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| summarize</span></span></div>
+<div class="t-line"><span class="t-output">&nbsp;&nbsp;&nbsp;&nbsp;Countries = make_set(Country),</span></div>
+<div class="t-line"><span class="t-output">&nbsp;&nbsp;&nbsp;&nbsp;LoginTimes = make_list(TimeGenerated),</span></div>
+<div class="t-line"><span class="t-output">&nbsp;&nbsp;&nbsp;&nbsp;Count = count()</span></div>
+<div class="t-line"><span class="t-output">&nbsp;&nbsp;<span style="color:#00d4ff">by</span> UserPrincipalName, bin(TimeGenerated, 1h)</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> array_length(Countries) > 1</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| extend</span> <span style="color:#ff3366">Severity = "High"</span>, TTP = <span style="color:#00ff88">"T1078 - Valid Accounts"</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| project</span> UserPrincipalName, Countries, LoginTimes, TTP, Severity</span></div>
+<br>
+<div class="t-line"><span class="t-output t-comment">// ── POWERSHELL ENCODED COMMAND DETECTION ──────────────────────────────</span></div>
+<div class="t-line"><span class="t-output t-comment">// T1059.001 — PowerShell com payload ofuscado</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#9d4edd">DeviceProcessEvents</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> FileName =~ <span style="color:#00ff88">"powershell.exe"</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> ProcessCommandLine has_any (<span style="color:#00ff88">"-enc"</span>, <span style="color:#00ff88">"-EncodedCommand"</span>, <span style="color:#00ff88">"-ec"</span>)</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> InitiatingProcessFileName in~ (<span style="color:#00ff88">"winword.exe"</span>, <span style="color:#00ff88">"excel.exe"</span>, <span style="color:#00ff88">"outlook.exe"</span>)</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| extend</span> <span style="color:#ff3366">RiskScore = 95</span>, TTP = <span style="color:#00ff88">"T1566.001 + T1059.001"</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| project</span> DeviceName, AccountName, ProcessCommandLine, InitiatingProcessFileName, TTP</span></div>
+<br>
+<div class="t-line"><span class="t-output t-comment">// ── DNS TUNNELING DETECTION ────────────────────────────────────────────</span></div>
+<div class="t-line"><span class="t-output t-comment">// T1071.004 — Exfiltração via DNS queries longas</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#9d4edd">DnsEvents</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> strlen(Name) > 50</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> QueryType == <span style="color:#00ff88">"TXT"</span> <span style="color:var(--text-muted)">// TXT records são comuns em tunneling</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| summarize</span> count() by Computer, bin(TimeGenerated, 5m), Name</span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| where</span> count_ > 20 <span style="color:var(--text-muted)">// Volume anormal</span></span></div>
+<div class="t-line"><span class="t-output"><span style="color:#00d4ff">| extend</span> TTP = <span style="color:#00ff88">"T1071.004 - DNS Tunneling"</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       BROWSER SECURITY RESEARCH
+       ══════════════════════════════════════════════════════════ -->
+  <section id="research" class="section" style="background:var(--dark)">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label accent-purple">BROWSER SECURITY RESEARCH</div>
+        <h2 class="section-title">Fingerprinting &<br><span class="accent-purple">Browser APIs</span></h2>
+        <p class="section-desc">
+          Pesquisa aplicada em técnicas de identificação de navegadores,
+          detecção de fraude via APIs nativas e análise de vetores de tracking.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🎨</div>
+          <div class="skill-name">Canvas Fingerprinting</div>
+          <div class="skill-desc">Renderização diferencial via GPU/driver produz hashes únicos por dispositivo. Funciona em modo incógnito, indiferente a VPN.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">HTML5 Canvas</span>
+            <span class="skill-tag">WebCrypto</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🔊</div>
+          <div class="skill-name">Audio Fingerprinting</div>
+          <div class="skill-desc">DynamicsCompressor e OscillatorNode processam onda sonora em memória — nenhum som reproduzido, fingerprint único gerado.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Web Audio API</span>
+            <span class="skill-tag">AudioContext</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🎮</div>
+          <div class="skill-name">WebGL / GPU Fingerprint</div>
+          <div class="skill-desc">WEBGL_debug_renderer_info expõe modelo exato da GPU sem permissão. MAX_TEXTURE_SIZE e extensions aumentam unicidade.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">WebGL</span>
+            <span class="skill-tag">GPU Detection</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🤖</div>
+          <div class="skill-name">Detecção de Automação</div>
+          <div class="skill-desc">navigator.webdriver, ChromeDriver artifacts, dimensões headless, ausência de plugins — score de probabilidade de bot 0-100%.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Puppeteer</span>
+            <span class="skill-tag">Selenium</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">🕵️</div>
+          <div class="skill-name">Incognito Detection</div>
+          <div class="skill-desc">Storage Quota API — modo incógnito limita quota a ~120MB. Desmistifica a falsa sensação de anonimato do modo privado.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">StorageManager API</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-in">
+          <div class="skill-icon">📡</div>
+          <div class="skill-name">WebRTC Leak Analysis</div>
+          <div class="skill-desc">ICE candidates expõem IPs de rede local mesmo com VPN ativa — técnica usada por sistemas antifraude para detectar proxies.</div>
+          <div class="skill-tags">
+            <span class="skill-tag">WebRTC</span>
+            <span class="skill-tag">ICE Protocol</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Entropia visual -->
+      <div style="margin-top:4rem" class="fade-in">
+        <div class="section-label accent-purple" style="margin-bottom:1.5rem">
+          ENTROPIA POR SINAL — CONTRIBUIÇÃO PARA UNICIDADE
+        </div>
+        <div class="fp-score-section">
+          <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:1.5rem;line-height:1.8">
+            Entropia estimada em bits por sinal. Quanto maior, mais esse sinal contribui para distinguir seu navegador
+            de todos os outros. Combinados, esses sinais criam um identificador com entropia total de ~30-40 bits
+            — capaz de distinguir 1 bilhão a 1 trilhão de perfis únicos.
+          </p>
+          <div class="score-breakdown">
+            ${[
+              ['Canvas Fingerprint', '~25 bits', 100, '#ff3366'],
+              ['WebGL / GPU Renderer', '~20 bits', 80, '#ff8c42'],
+              ['Audio Fingerprint', '~15 bits', 60, '#ffd60a'],
+              ['User-Agent completo', '~10 bits', 40, '#00d4ff'],
+              ['Timezone + Locale', '~10 bits', 40, '#9d4edd'],
+              ['Fontes instaladas', '~8 bits', 32, '#00ff88'],
+              ['Resolução + DPR', '~7 bits', 28, '#00d4ff'],
+              ['Hardware (CPU/RAM)', '~5 bits', 20, '#5a5f7a'],
+            ].map(([label, val, pct, color]) => `
+              <div class="score-bar-item" style="margin-bottom:1rem">
+                <div class="score-bar-label">
+                  <span>${label}</span>
+                  <span style="color:${color}">${val}</span>
+                </div>
+                <div class="score-bar-track">
+                  <div class="score-bar-fill entropy-bar" data-target="${pct}"
+                       style="background:${color};width:0%;transition:width 1.5s ease"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       PROJECTS
+       ══════════════════════════════════════════════════════════ -->
+  <section id="projects" class="section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label accent-green">PROJETOS TÉCNICOS</div>
+        <h2 class="section-title">Playbooks, Queries<br><span class="accent-green">& Research</span></h2>
+      </div>
+
+      <div class="projects-list fade-in">
+        <div class="project-item">
+          <div>
+            <div class="project-number">01 / BLUE TEAM</div>
+            <div class="project-name">Impossible Travel Playbook</div>
+            <div class="project-desc">Playbook completo de IR para detecção e resposta a Impossible Travel no Entra ID. Inclui queries KQL, mapeamento MITRE T1078 e template de ticket.</div>
+          </div>
+          <span class="project-category blue">SOC IR</span>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <div class="project-number">02 / BLUE TEAM</div>
+            <div class="project-name">Ransomware Response Playbook</div>
+            <div class="project-desc">6 fases de IR para ransomware em endpoint Windows 11 via CrowdStrike Falcon. Identificação → Contenção → Erradicação → Recuperação → Lições Aprendidas.</div>
+          </div>
+          <span class="project-category blue">Incident Response</span>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <div class="project-number">03 / BLUE TEAM</div>
+            <div class="project-name">KQL Arsenal — Sentinel</div>
+            <div class="project-desc">Biblioteca de queries KQL para Sentinel cobrindo autenticação suspeita, movimentação lateral, persistência via registro e exfiltração DNS.</div>
+          </div>
+          <span class="project-category blue">KQL / SIEM</span>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <div class="project-number">04 / RESEARCH</div>
+            <div class="project-name">Browser Fingerprint Demo</div>
+            <div class="project-desc">Este portfólio. Demonstração interativa de Canvas, Audio, WebGL, Font e Connection fingerprinting com score de rastreabilidade e educação sobre privacidade.</div>
+          </div>
+          <span class="project-category purple">Browser Security</span>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <div class="project-number">05 / PURPLE TEAM</div>
+            <div class="project-name">SharePoint Exfil Exercise</div>
+            <div class="project-desc">Exercício Purple Team simulando exfiltração via SharePoint/OneDrive. Red: técnicas de mimicry. Blue: Unified Audit Log queries e alertas Defender for Cloud Apps.</div>
+          </div>
+          <span class="project-category green">Purple Team</span>
+        </div>
+
+        <div class="project-item">
+          <div>
+            <div class="project-number">06 / RESEARCH</div>
+            <div class="project-name">OSINT Defensivo — Attack Surface</div>
+            <div class="project-desc">Framework de OSINT defensivo cobrindo DNS recon, crt.sh certificate analysis, subdomain enumeration e hardening recommendations por achado.</div>
+          </div>
+          <span class="project-category green">OSINT</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ABOUT
+       ══════════════════════════════════════════════════════════ -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <!-- Left -->
+        <div class="fade-in">
+          <span class="about-badge">● DISPONÍVEL PARA OPORTUNIDADES</span>
+          <h2 class="section-title">Jonathan Xavier</h2>
+          <div class="section-label accent-cyan" style="margin:1rem 0">SOC ANALYST N1 · BLUE TEAM · AZURE SECURITY</div>
+
+          <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.9;margin-bottom:1.5rem">
+            Analista de segurança focado em operações defensivas no ecossistema Microsoft Azure.
+            Experiência em triagem de alertas, correlação multi-fonte, incident response e
+            desenvolvimento de playbooks. Pesquiso ativamente browser security e fingerprinting
+            aplicados à detecção de fraude e à conscientização sobre privacidade digital.
+          </p>
+
+          <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.9">
+            Acredito que um bom analista de segurança precisa pensar como o atacante
+            para defender com eficiência — e precisão técnica é inegociável.
+          </p>
+
+          <ul class="cert-list" style="margin-top:2rem">
+            <li class="cert-item">
+              <span class="cert-item-icon">◈</span>
+              <span class="cert-item-name">Microsoft Sentinel — Operações SOC</span>
+              <span class="cert-item-status">ATIVO</span>
+            </li>
+            <li class="cert-item">
+              <span class="cert-item-icon">◈</span>
+              <span class="cert-item-name">MITRE ATT&CK Defender (MAD)</span>
+              <span class="cert-item-status">EM CURSO</span>
+            </li>
+            <li class="cert-item">
+              <span class="cert-item-icon">◈</span>
+              <span class="cert-item-name">SC-200 — Microsoft Security Operations</span>
+              <span class="cert-item-status">EM CURSO</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right: Stats -->
+        <div class="fade-in">
+          <div class="stat-grid" style="margin-bottom:2rem">
+            <div class="stat-item">
+              <div class="stat-number">12+</div>
+              <div class="stat-label">Sinais de FP analisados</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">30+</div>
+              <div class="stat-label">Queries KQL no arsenal</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">6</div>
+              <div class="stat-label">Playbooks IR documentados</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">100%</div>
+              <div class="stat-label">Foco defensivo</div>
+            </div>
+          </div>
+
+          <!-- Stack -->
+          <div style="background:var(--muted);border:1px solid var(--border);padding:1.5rem">
+            <div class="fp-card-name" style="margin-bottom:1rem">STACK TÉCNICO</div>
+            <div style="display:flex;flex-direction:column;gap:0.6rem">
+              ${[
+                ['SIEM', 'Microsoft Sentinel · QRadar'],
+                ['EDR', 'CrowdStrike Falcon · Defender'],
+                ['Identity', 'Microsoft Entra ID'],
+                ['WAF', 'Imperva WAF'],
+                ['Query', 'KQL · SPL · SQL'],
+                ['Frameworks', 'MITRE ATT&CK · Kill Chain · Zero Trust'],
+                ['Research', 'JavaScript · Python · Bash'],
+              ].map(([k, v]) => `
+                <div style="display:flex;gap:1rem;font-size:0.77rem">
+                  <span style="color:var(--text-muted);width:80px;flex-shrink:0">${k}</span>
+                  <span style="color:var(--text)">${v}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div style="display:flex;gap:1rem;margin-top:1.5rem">
+            <a href="https://github.com/Jonathan-6dward" target="_blank" rel="noopener" class="btn-secondary" style="flex:1;justify-content:center">
+              GitHub →
+            </a>
+            <a href="https://linkedin.com/in/jonathan-6dward" target="_blank" rel="noopener" class="btn-primary" style="flex:1;justify-content:center">
+              LinkedIn →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-copy">
+          © 2025 <span>Jonathan Xavier</span> · SOC Analyst N1 · Blue Team<br>
+          <span style="font-size:0.68rem;color:var(--text-muted)">
+            Dados coletados localmente · Nenhuma informação transmitida a servidores externos · Fins educativos
+          </span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/Jonathan-6dward" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/in/jonathan-6dward" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="#fingerprint">Análise</a>
+          <a href="#soc">SOC</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /main-portfolio -->
+
+<!-- SCRIPTS -->
+<script src="js/fingerprint.js"></script>
+<script src="js/ui.js"></script>
+<script>
+  // ── INIT ──────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    UI.init();
+
+    // Animar barras de entropia ao entrar na viewport
+    const entropyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.entropy-bar').forEach(bar => {
+            const target = parseInt(bar.dataset.target);
+            bar.style.width = target + '%';
+          });
+          entropyObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('#research .fp-score-section').forEach(el => {
+      entropyObserver.observe(el);
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -475,28 +475,11 @@
             de todos os outros. Combinados, esses sinais criam um identificador com entropia total de ~30-40 bits
             — capaz de distinguir 1 bilhão a 1 trilhão de perfis únicos.
           </p>
-          <div class="score-breakdown">
-            ${[
-              ['Canvas Fingerprint', '~25 bits', 100, '#ff3366'],
-              ['WebGL / GPU Renderer', '~20 bits', 80, '#ff8c42'],
-              ['Audio Fingerprint', '~15 bits', 60, '#ffd60a'],
-              ['User-Agent completo', '~10 bits', 40, '#00d4ff'],
-              ['Timezone + Locale', '~10 bits', 40, '#9d4edd'],
-              ['Fontes instaladas', '~8 bits', 32, '#00ff88'],
-              ['Resolução + DPR', '~7 bits', 28, '#00d4ff'],
-              ['Hardware (CPU/RAM)', '~5 bits', 20, '#5a5f7a'],
-            ].map(([label, val, pct, color]) => `
-              <div class="score-bar-item" style="margin-bottom:1rem">
-                <div class="score-bar-label">
-                  <span>${label}</span>
-                  <span style="color:${color}">${val}</span>
-                </div>
-                <div class="score-bar-track">
-                  <div class="score-bar-fill entropy-bar" data-target="${pct}"
-                       style="background:${color};width:0%;transition:width 1.5s ease"></div>
-                </div>
-              </div>
-            `).join('')}
+          <div class="score-breakdown" id="entropy-bars-container">
+            <!-- Preenchido dinamicamente pelo JavaScript -->
+            <div style="color:var(--text-muted);font-size:0.75rem;text-align:center;padding:2rem;">
+              Carregando entropia dos sinais...
+            </div>
           </div>
         </div>
       </div>
@@ -638,21 +621,11 @@
           <!-- Stack -->
           <div style="background:var(--muted);border:1px solid var(--border);padding:1.5rem">
             <div class="fp-card-name" style="margin-bottom:1rem">STACK TÉCNICO</div>
-            <div style="display:flex;flex-direction:column;gap:0.6rem">
-              ${[
-                ['SIEM', 'Microsoft Sentinel · QRadar'],
-                ['EDR', 'CrowdStrike Falcon · Defender'],
-                ['Identity', 'Microsoft Entra ID'],
-                ['WAF', 'Imperva WAF'],
-                ['Query', 'KQL · SPL · SQL'],
-                ['Frameworks', 'MITRE ATT&CK · Kill Chain · Zero Trust'],
-                ['Research', 'JavaScript · Python · Bash'],
-              ].map(([k, v]) => `
-                <div style="display:flex;gap:1rem;font-size:0.77rem">
-                  <span style="color:var(--text-muted);width:80px;flex-shrink:0">${k}</span>
-                  <span style="color:var(--text)">${v}</span>
-                </div>
-              `).join('')}
+            <div style="display:flex;flex-direction:column;gap:0.6rem" id="tech-stack-container">
+              <!-- Preenchido dinamicamente pelo JavaScript -->
+              <div style="color:var(--text-muted);font-size:0.75rem;text-align:center;padding:1rem;">
+                Carregando stack técnico...
+              </div>
             </div>
           </div>
 
@@ -701,6 +674,55 @@
   // ── INIT ──────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     UI.init();
+
+    // Preencher barras de entropia
+    const entropyData = [
+      ['Canvas Fingerprint', '~25 bits', 100, '#ff3366'],
+      ['WebGL / GPU Renderer', '~20 bits', 80, '#ff8c42'],
+      ['Audio Fingerprint', '~15 bits', 60, '#ffd60a'],
+      ['User-Agent completo', '~10 bits', 40, '#00d4ff'],
+      ['Timezone + Locale', '~10 bits', 40, '#9d4edd'],
+      ['Fontes instaladas', '~8 bits', 32, '#00ff88'],
+      ['Resolução + DPR', '~7 bits', 28, '#00d4ff'],
+      ['Hardware (CPU/RAM)', '~5 bits', 20, '#5a5f7a'],
+    ];
+
+    const entropyContainer = document.getElementById('entropy-bars-container');
+    if (entropyContainer) {
+      entropyContainer.innerHTML = entropyData.map(([label, val, pct, color]) => `
+        <div class="score-bar-item" style="margin-bottom:1rem">
+          <div class="score-bar-label">
+            <span>${label}</span>
+            <span style="color:${color}">${val}</span>
+          </div>
+          <div class="score-bar-track">
+            <div class="score-bar-fill entropy-bar" data-target="${pct}"
+                 style="background:${color};width:0%;transition:width 1.5s ease"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Preencher stack técnico
+    const stackData = [
+      ['SIEM', 'Microsoft Sentinel · QRadar'],
+      ['EDR', 'CrowdStrike Falcon · Defender'],
+      ['Identity', 'Microsoft Entra ID'],
+      ['WAF', 'Imperva WAF'],
+      ['Query', 'KQL · SPL · SQL'],
+      ['Frameworks', 'MITRE ATT&CK · Kill Chain · Zero Trust'],
+      ['Research', 'JavaScript · Python · Bash'],
+    ];
+
+    const stackContainer = document.getElementById('tech-stack-container');
+    if (stackContainer) {
+      stackContainer.innerHTML = stackData.map(([k, v]) => `
+        <div style="display:flex;gap:1rem;font-size:0.77rem">
+          <span style="color:var(--text-muted);width:80px;flex-shrink:0">${k}</span>
+          <span style="color:var(--text)">${v}</span>
+        </div>
+      `).join('');
+    }
 
     // Animar barras de entropia ao entrar na viewport
     const entropyObserver = new IntersectionObserver((entries) => {

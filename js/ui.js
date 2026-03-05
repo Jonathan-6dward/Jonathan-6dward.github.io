@@ -72,78 +72,136 @@ const UI = (() => {
     });
   }
 
-  // ─── SCREEN 3.5: CAMERA PERMISSION ────────────────────────────
+  // ─── SCREEN 3.5: BROWSER PERMISSIONS ───────────────────────────
 
   function initCameraPermissionScreen() {
-    const camCheck = document.getElementById('cam-permission-check');
-    const shouldAsk = camCheck?.checked;
-
     document.getElementById('btn-cam-allow')?.addEventListener('click', async () => {
-      const result = await FingerprintEngine.requestCameraPermission();
-      if (result.success) {
-        showToast('✓ Permissão concedida. Câmera ativa para demonstração.');
-        // Exibir vídeo em modal ou seção especial
-        displayCameraStream(result.stream);
-      } else {
-        showToast('✕ Permissão negada. Continuando sem câmera.');
-      }
+      // 1. Ocultar tela de permissão PRIMEIRO
       hideAllScreens();
+
+      // 2. Solicitar permissões ao navegador
+      const result = await FingerprintEngine.requestCameraPermission();
+
+      if (result.success) {
+        showToast('✓ Permissões concedidas. Câmera e microfone ativos.');
+        // 3. Exibir stream e aguardar o modal fechar antes de continuar
+        await displayAndAwaitCameraStream(result.stream);
+      } else {
+        showToast('✕ Permissão negada pelo navegador. Continuando sem câmera.');
+      }
+
+      // 4. Só então exibir o portfólio
       showPortfolio();
     });
 
     document.getElementById('btn-cam-deny')?.addEventListener('click', () => {
-      showToast('Permissão de câmera negada. Continuando sem acesso.');
+      // Pular: ocultar e exibir portfólio diretamente
       hideAllScreens();
       showPortfolio();
     });
   }
 
-  function displayCameraStream(stream) {
-    // Cria modal para exibir stream da câmera
-    const modal = document.createElement('div');
-    modal.id = 'cam-preview-modal';
-    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem';
-    
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.autoplay = true;
-    video.playsInline = true;
-    video.muted = true;
-    video.style.cssText = 'width:min(640px,90vw);border:2px solid var(--cyan);border-radius:8px;box-shadow:0 0 40px rgba(0,212,255,0.3)';
-    
-    const closeBtn = document.createElement('button');
-    closeBtn.textContent = '✕ FECHAR CÂMERA';
-    closeBtn.style.cssText = 'padding:0.75rem 1.5rem;background:var(--surface);border:1px solid var(--cyan);color:var(--cyan);font-family:var(--font-mono);font-size:0.8rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.1em';
-    closeBtn.onclick = () => {
-      stream.getTracks().forEach(track => track.stop());
-      modal.remove();
-    };
+  function displayAndAwaitCameraStream(stream) {
+    return new Promise(resolve => {
+      const DURATION = 10000; // 10 segundos
 
-    const info = document.createElement('div');
-    info.innerHTML = '<span style="color:var(--text-dim);font-size:0.75rem">🔒 Processamento local — nenhum dado enviado a servidores externos</span>';
-    info.style.cssText = 'text-align:center';
+      // Wrapper principal
+      const modal = document.createElement('div');
+      modal.id = 'cam-preview-modal';
+      modal.style.cssText = [
+        'position:fixed;inset:0;z-index:9999',
+        'background:rgba(0,0,0,0.93)',
+        'display:flex;align-items:center;justify-content:center',
+        'flex-direction:column;gap:1.25rem',
+        'padding:1.5rem',
+      ].join(';');
 
-    modal.appendChild(video);
-    modal.appendChild(info);
-    modal.appendChild(closeBtn);
-    document.body.appendChild(modal);
+      // Label topo
+      const label = document.createElement('div');
+      label.style.cssText = 'font-size:0.65rem;letter-spacing:0.4em;color:var(--cyan);text-transform:uppercase';
+      label.textContent = '🔒 Stream Local — Nenhum dado transmitido';
 
-    // Parar stream após 10 segundos
-    setTimeout(() => {
-      if (modal.parentNode) {
-        stream.getTracks().forEach(track => track.stop());
+      // Vídeo
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.muted = true;
+      video.style.cssText = [
+        'width:min(640px,90vw)',
+        'border:2px solid var(--cyan)',
+        'border-radius:4px',
+        'box-shadow:0 0 40px rgba(0,212,255,0.25)',
+        'display:block',
+      ].join(';');
+
+      // Barra de contagem regressiva
+      const progressWrap = document.createElement('div');
+      progressWrap.style.cssText = 'width:min(640px,90vw);height:3px;background:var(--muted);border-radius:2px;overflow:hidden';
+      const progressBar = document.createElement('div');
+      progressBar.style.cssText = 'height:100%;width:100%;background:var(--cyan);transition:width linear';
+      progressWrap.appendChild(progressBar);
+
+      // Botão fechar
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = '✕ FECHAR CÂMERA';
+      closeBtn.style.cssText = [
+        'padding:0.75rem 2rem',
+        'background:transparent',
+        'border:1px solid var(--cyan)',
+        'color:var(--cyan)',
+        'font-family:var(--font-mono)',
+        'font-size:0.78rem',
+        'cursor:pointer',
+        'text-transform:uppercase',
+        'letter-spacing:0.15em',
+        'transition:background 0.2s,color 0.2s',
+      ].join(';');
+      closeBtn.onmouseenter = () => { closeBtn.style.background = 'var(--cyan)'; closeBtn.style.color = 'var(--black)'; };
+      closeBtn.onmouseleave = () => { closeBtn.style.background = 'transparent'; closeBtn.style.color = 'var(--cyan)'; };
+
+      let rafId = null;
+      let timerStart = null;
+
+      const closeModal = () => {
+        if (!modal.parentNode) return;
+        cancelAnimationFrame(rafId);
+        stream.getTracks().forEach(t => t.stop());
         modal.remove();
-        showToast('Câmera desligada automaticamente após demonstração.');
-      }
-    }, 10000);
+        resolve();
+      };
+
+      // Animar barra de progresso via RAF
+      const animateBar = (ts) => {
+        if (!timerStart) timerStart = ts;
+        const elapsed = ts - timerStart;
+        const remaining = Math.max(0, 1 - elapsed / DURATION);
+        progressBar.style.width = (remaining * 100) + '%';
+        if (elapsed < DURATION) {
+          rafId = requestAnimationFrame(animateBar);
+        } else {
+          showToast('Câmera encerrada automaticamente.');
+          closeModal();
+        }
+      };
+      rafId = requestAnimationFrame(animateBar);
+
+      closeBtn.onclick = closeModal;
+
+      modal.appendChild(label);
+      modal.appendChild(video);
+      modal.appendChild(progressWrap);
+      modal.appendChild(closeBtn);
+      document.body.appendChild(modal);
+    });
   }
 
   // ─── SCREEN 3: SCANNING ───────────────────────────────────────
 
   async function runScanning() {
     const logContainer = document.getElementById('scan-log');
-    const progressBar  = document.getElementById('scan-bar-fill');
-    const percentEl    = document.getElementById('scan-percent');
+    const progressBar = document.getElementById('scan-bar-fill');
+    const percentEl = document.getElementById('scan-percent');
 
     function addLog(text, type = '') {
       if (!logContainer) return;
@@ -160,7 +218,7 @@ const UI = (() => {
 
     function updateProgress(label, pct) {
       if (progressBar) progressBar.style.width = pct + '%';
-      if (percentEl)   percentEl.textContent   = pct + '%';
+      if (percentEl) percentEl.textContent = pct + '%';
       addLog(label, pct === 100 ? 'ok' : '');
     }
 
@@ -175,16 +233,9 @@ const UI = (() => {
     await sleep(600);
     renderFingerprintSection(fpData);
 
-    // Verificar se usuário marcou opção de câmera
-    const camCheck = document.getElementById('cam-permission-check');
-    if (camCheck?.checked) {
-      // Mostrar tela de permissão de câmera antes do portfólio
-      showScreen('screen-camera-permission');
-      initCameraPermissionScreen();
-    } else {
-      hideAllScreens();
-      showPortfolio();
-    }
+    // Sempre mostrar tela de permissões do navegador antes do portfólio
+    showScreen('screen-camera-permission');
+    initCameraPermissionScreen();
 
     // Scroll para a seção de fingerprint após reveal
     setTimeout(() => {
@@ -344,13 +395,13 @@ const UI = (() => {
       cards.push({
         icon: '🌐',
         name: 'Presença em Redes Sociais',
-        value: data.social.detectedProfiles.length > 0 
-          ? `${data.social.detectedProfiles.length} rede(s) detectada(s)` 
+        value: data.social.detectedProfiles.length > 0
+          ? `${data.social.detectedProfiles.length} rede(s) detectada(s)`
           : (data.social.possibleName ? `Nome: ${data.social.possibleName}` : 'Nenhuma detecção'),
         risk: data.social.detectedProfiles.length > 0 || data.social.possibleName ? 'high' : 'low',
         riskLabel: data.social.detectedProfiles.length > 0 || data.social.possibleName ? 'Alto' : 'Baixo',
-        detail: socialDetails.length > 0 
-          ? socialDetails.join('<br><br>') 
+        detail: socialDetails.length > 0
+          ? socialDetails.join('<br><br>')
           : `<strong>Nenhuma informação pessoal detectada.</strong> Seu navegador está bem configurado contra vazamento de dados pessoais via técnicas de fingerprinting.`
       });
     }
@@ -449,21 +500,21 @@ const UI = (() => {
 
   function initTerminalAnimation() {
     const lines = [
-      { type: 'cmd',    text: 'whoami' },
-      { type: 'out',    text: 'jonathan.xavier@soc-workstation' },
-      { type: 'cmd',    text: 'cat /etc/role' },
-      { type: 'out',    text: 'SOC Analyst N1 | Blue Team | Azure Security' },
-      { type: 'cmd',    text: 'sentinel --query "SecurityAlert | top 5"' },
-      { type: 'key',    text: 'TimeGenerated', val: '2025-03-05T03:14:00Z' },
-      { type: 'key',    text: 'AlertName',     val: 'Impossible Travel Detected', valClass: 'crit' },
-      { type: 'key',    text: 'Severity',      val: 'High', valClass: 'warn' },
-      { type: 'key',    text: 'TacticName',    val: 'T1078 - Valid Accounts' },
-      { type: 'cmd',    text: 'mitre-map --tcode T1078' },
-      { type: 'out',    text: '→ Tactic: Initial Access' },
-      { type: 'out',    text: '→ Sub-technique: T1078.004 - Cloud Accounts' },
-      { type: 'cmd',    text: 'playbook run --incident INC-2025-0314' },
-      { type: 'out',    text: '✓ Contention initiated — account suspended', cls: 'ok' },
-      { type: 'out',    text: '✓ IR ticket #2025-0314 created', cls: 'ok' },
+      { type: 'cmd', text: 'whoami' },
+      { type: 'out', text: 'jonathan.xavier@soc-workstation' },
+      { type: 'cmd', text: 'cat /etc/role' },
+      { type: 'out', text: 'SOC Analyst N1 | Blue Team | Azure Security' },
+      { type: 'cmd', text: 'sentinel --query "SecurityAlert | top 5"' },
+      { type: 'key', text: 'TimeGenerated', val: '2025-03-05T03:14:00Z' },
+      { type: 'key', text: 'AlertName', val: 'Impossible Travel Detected', valClass: 'crit' },
+      { type: 'key', text: 'Severity', val: 'High', valClass: 'warn' },
+      { type: 'key', text: 'TacticName', val: 'T1078 - Valid Accounts' },
+      { type: 'cmd', text: 'mitre-map --tcode T1078' },
+      { type: 'out', text: '→ Tactic: Initial Access' },
+      { type: 'out', text: '→ Sub-technique: T1078.004 - Cloud Accounts' },
+      { type: 'cmd', text: 'playbook run --incident INC-2025-0314' },
+      { type: 'out', text: '✓ Contention initiated — account suspended', cls: 'ok' },
+      { type: 'out', text: '✓ IR ticket #2025-0314 created', cls: 'ok' },
     ];
 
     const body = document.getElementById('terminal-lines');

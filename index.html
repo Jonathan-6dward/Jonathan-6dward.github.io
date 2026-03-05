@@ -87,15 +87,6 @@
       técnicas que analistas de segurança precisam conhecer para proteger usuários.
     </div>
 
-    <div class="consent-extra" style="margin-top:1.2rem;padding:1rem;background:rgba(0,212,255,0.05);border:1px solid var(--cyan-dim);border-radius:4px">
-      <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem">
-        <input type="checkbox" id="cam-permission-check" style="width:16px;height:16px;margin-top:2px;accent-color:var(--cyan)">
-        <label for="cam-permission-check" style="font-size:0.79rem;color:var(--text-dim);line-height:1.6;cursor:pointer">
-          <strong style="color:var(--cyan)">Permissão opcional de câmera/microfone:</strong> Após a análise, você poderá conceder acesso à sua câmera e microfone para demonstrar como um site pode usar esses dispositivos após permissão explícita. <em style="color:var(--text-muted)">Você pode negar a qualquer momento.</em>
-        </label>
-      </div>
-    </div>
-
     <div class="consent-actions">
       <button class="btn-accept" id="btn-accept">
         ✓ &nbsp;ENTENDO E ACEITO
@@ -108,34 +99,68 @@
 </div>
 
 <!-- ============================================================
-     SCREEN 3.5 — CAMERA PERMISSION
+     SCREEN 3.5 — BROWSER PERMISSIONS
      ============================================================ -->
 <div id="screen-camera-permission" class="screen hidden">
-  <div class="consent-box" style="max-width:520px">
-    <span class="consent-tag" style="color:var(--cyan)">📹 PERMISSÃO DE CÂMERA</span>
-    <h2 class="consent-title">Acesso à Câmera e Microfone</h2>
+  <div class="cam-perm-box">
 
-    <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.8;margin-bottom:1rem">
-      Você concordou em permitir o acesso à câmera para fins demonstrativos.
-      Este acesso será usado para mostrar como um site pode exibir vídeo em tempo real
-      após obter permissão do usuário.
+    <!-- Pulsing status badge -->
+    <div class="cam-perm-status">
+      <span class="cam-perm-status-dot"></span>
+      AGUARDANDO AUTORIZAÇÃO DO NAVEGADOR
+    </div>
+
+    <div class="cam-perm-icon">🔒</div>
+
+    <h2 class="cam-perm-title">Ativar Permissões do Navegador</h2>
+    <p class="cam-perm-subtitle">
+      Para completar a demonstração, o site vai solicitar acesso aos recursos abaixo.<br>
+      Seu navegador exibirá um <strong>popup oficial</strong> — você decide.
     </p>
 
-    <div style="background:rgba(0,255,136,0.05);border:1px solid var(--green);padding:0.85rem;margin:1rem 0;font-size:0.77rem;color:var(--text-dim);line-height:1.7">
-      <strong style="color:var(--green)">✓ Seguro:</strong> O vídeo é processado localmente no seu navegador. Nenhum frame é enviado a servidores externos ou gravado em arquivo.
+    <!-- Permission chips -->
+    <div class="cam-perm-chips">
+      <div class="cam-perm-chip">
+        <span class="cam-chip-icon">📷</span>
+        <div>
+          <div class="cam-chip-label">CÂMERA</div>
+          <div class="cam-chip-desc">Vídeo em tempo real</div>
+        </div>
+      </div>
+      <div class="cam-perm-chip">
+        <span class="cam-chip-icon">🎙️</span>
+        <div>
+          <div class="cam-chip-label">MICROFONE</div>
+          <div class="cam-chip-desc">Captura de áudio</div>
+        </div>
+      </div>
+      <div class="cam-perm-chip">
+        <span class="cam-chip-icon">🔊</span>
+        <div>
+          <div class="cam-chip-label">ÁUDIO</div>
+          <div class="cam-chip-desc">Saída de som</div>
+        </div>
+      </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1.5rem">
-      <button class="btn-accept" id="btn-cam-allow" style="flex:none;width:100%">
-        📷 &nbsp;PERMITIR CÂMERA
-      </button>
-      <button class="btn-decline" id="btn-cam-deny" style="flex:none;width:100%">
-        ✕ &nbsp;NEGAR
-      </button>
+    <!-- Safety notice -->
+    <div class="cam-perm-notice">
+      <strong style="color:var(--green)">✓ 100% Local.</strong>
+      Nenhum dado é transmitido. Processamento ocorre exclusivamente no seu navegador.
     </div>
 
-    <p style="font-size:0.7rem;color:var(--text-muted);text-align:center;margin-top:1rem">
-      Você pode mudar esta decisão a qualquer momento nas configurações do navegador.
+    <!-- Single action button -->
+    <button class="btn-cam-activate" id="btn-cam-allow">
+      <span class="btn-cam-activate-icon">⚡</span>
+      ATIVAR CÂMERA + MICROFONE
+    </button>
+
+    <button class="btn-cam-skip" id="btn-cam-deny">
+      ✕ Pular esta etapa
+    </button>
+
+    <p class="cam-perm-footer">
+      Você pode revogar qualquer permissão a qualquer momento nas configurações do navegador.
     </p>
   </div>
 </div>

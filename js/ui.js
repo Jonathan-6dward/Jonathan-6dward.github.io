@@ -87,11 +87,13 @@ const UI = (() => {
       } else {
         showToast('✕ Permissão negada. Continuando sem câmera.');
       }
+      hideAllScreens();
       showPortfolio();
     });
 
     document.getElementById('btn-cam-deny')?.addEventListener('click', () => {
       showToast('Permissão de câmera negada. Continuando sem acesso.');
+      hideAllScreens();
       showPortfolio();
     });
   }
